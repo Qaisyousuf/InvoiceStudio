@@ -31,6 +31,13 @@ public class CreditNoteConfiguration : IEntityTypeConfiguration<CreditNote>
         builder.Property(c => c.Notes)
             .HasMaxLength(1000);
 
+        // Indexes for Performance
+        builder.HasIndex(c => c.CreditNoteNumber).IsUnique();
+        builder.HasIndex(c => c.InvoiceId);
+        builder.HasIndex(c => c.ClientId);
+        builder.HasIndex(c => c.Status);
+        builder.HasIndex(c => c.IssueDate);
+
         // Relationships
         builder.HasOne(c => c.Invoice)
             .WithMany()

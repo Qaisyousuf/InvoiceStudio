@@ -1,10 +1,16 @@
-﻿using System.Windows;
+﻿using InvoiceStudio.Application.Abstractions;
+using InvoiceStudio.Infrastructure.Persistence;
+using InvoiceStudio.Infrastructure.Persistence.Repositories;
+using InvoiceStudio.Presentation.Wpf.ViewModels;
+using InvoiceStudio.Presentation.Wpf.Views.Clients;
+using InvoiceStudio.Presentation.Wpf.Views.Invoices;
+using InvoiceStudio.Presentation.Wpf.Views.Products;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using InvoiceStudio.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using System.Windows;
 
 namespace InvoiceStudio.Presentation.Wpf;
 
@@ -50,7 +56,23 @@ public partial class App : System.Windows.Application
             options.UseSqlServer(connectionString);
         });
         services.AddScoped<DatabaseSeeder>();
+        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        services.AddScoped<IClientRepository, ClientRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<ITaxRepository, TaxRepository>();
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
+        services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         // MainWindow
+
+        services.AddTransient<InvoicesListViewModel>();
+        services.AddTransient<InvoicesListView>();
+        services.AddTransient<ClientsListViewModel>();
+        services.AddTransient<ClientsListView>();
+        services.AddTransient<ProductsListViewModel>();
+        services.AddTransient<ProductsListView>();
+        services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MainWindow>();
     }
 

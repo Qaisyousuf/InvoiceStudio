@@ -26,6 +26,11 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.Notes)
             .HasMaxLength(500);
 
+        // Indexes for Performance
+        builder.HasIndex(p => p.InvoiceId);
+        builder.HasIndex(p => p.PaymentDate);
+        builder.HasIndex(p => p.Method);
+
         // Relationships
         builder.HasOne(p => p.Invoice)
             .WithMany()

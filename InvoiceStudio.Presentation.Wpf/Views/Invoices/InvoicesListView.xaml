@@ -1,0 +1,112 @@
+﻿<UserControl x:Class="InvoiceStudio.Presentation.Wpf.Views.Invoices.InvoicesListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="1000">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Invoices" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Refresh" 
+                            Command="{Binding LoadInvoicesCommand}"
+                            Margin="0,0,10,0"
+                            Padding="15,8"
+                            Background="#34495E"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+
+                    <Button Content="+ New Invoice" 
+                            Command="{Binding CreateInvoiceCommand}"
+                            Padding="15,8"
+                            Background="#27AE60"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Invoice List -->
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding Invoices}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  Background="White"
+                  RowBackground="White"
+                  AlternatingRowBackground="#F8F9FA"
+                  BorderThickness="0"
+                  Margin="20"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Invoice #" 
+                                    Binding="{Binding InvoiceNumber, Mode=OneWay}" 
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Client" 
+                                    Binding="{Binding Client.Name, Mode=OneWay, TargetNullValue='-'}" 
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Issue Date" 
+                                    Binding="{Binding IssueDate, StringFormat='{}{0:dd/MM/yyyy}', Mode=OneWay}" 
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Due Date" 
+                                    Binding="{Binding DueDate, StringFormat='{}{0:dd/MM/yyyy}', Mode=OneWay}" 
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Status" 
+                                    Binding="{Binding Status, Mode=OneWay}" 
+                                    Width="100"/>
+
+                <DataGridTextColumn Header="Total" 
+                                    Binding="{Binding TotalAmount, StringFormat='{}{0:C}', Mode=OneWay}" 
+                                    Width="120"/>
+
+                <DataGridTemplateColumn Header="Actions" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="View" 
+                                    Command="{Binding DataContext.ViewInvoiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Padding="10,5"
+                                    Background="#3498DB"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

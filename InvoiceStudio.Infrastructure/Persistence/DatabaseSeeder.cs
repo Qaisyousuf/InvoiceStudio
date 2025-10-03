@@ -54,31 +54,33 @@ public class DatabaseSeeder
 
     private async Task SeedCompaniesAsync()
     {
-        var company = new Company("InvoiceStudio Ltd");
-        company.UpdateDetails(
-            "InvoiceStudio Ltd",
-            "InvoiceStudio Limited",
-            "123456789",
-            "FR12345678901"
+        // French Company
+        var frenchCompany = new Company("InvoiceStudio France", "FR");
+        frenchCompany.UpdateFrenchRegistration("12345678901234", "6201Z", true);
+        frenchCompany.UpdateDetails(
+            "InvoiceStudio France",
+            "InvoiceStudio SARL",
+            "FR12345678901",
+            null
         );
-        company.UpdateAddress(
-            "123 Business Street",
+        frenchCompany.UpdateAddress(
+            "123 Rue de la République",
             "Paris",
             "75001",
             "France"
         );
-        company.UpdateContact(
-            "contact@invoicestudio.com",
+        frenchCompany.UpdateContact(
+            "contact@invoicestudio.fr",
             "+33 1 23 45 67 89",
-            "www.invoicestudio.com"
+            "www.invoicestudio.fr"
         );
-        company.UpdateBanking(
+        frenchCompany.UpdateBanking(
             "BNP Paribas",
             "FR7630006000011234567890189",
             "BNPAFRPPXXX"
         );
 
-        _context.Companies.Add(company);
+        _context.Companies.Add(frenchCompany);
         await Task.CompletedTask;
     }
 
@@ -86,10 +88,15 @@ public class DatabaseSeeder
     {
         var taxes = new[]
         {
-            new Tax("VAT Standard", 20.0m, TaxType.VAT, "FR"),
-            new Tax("VAT Reduced", 10.0m, TaxType.VAT, "FR"),
-            new Tax("VAT Super Reduced", 5.5m, TaxType.VAT, "FR"),
-            new Tax("No Tax", 0.0m, TaxType.None, "FR")
+            // French VAT rates
+            new Tax("TVA Standard France", 20.0m, TaxType.VAT, "FR"),
+            new Tax("TVA Intermédiaire France", 10.0m, TaxType.VAT, "FR"),
+            new Tax("TVA Réduite France", 5.5m, TaxType.VAT, "FR"),
+            new Tax("Pas de TVA France", 0.0m, TaxType.None, "FR"),
+            
+            // Danish VAT rates
+            new Tax("Moms Standard Denmark", 25.0m, TaxType.VAT, "DK"),
+            new Tax("No VAT Denmark", 0.0m, TaxType.None, "DK")
         };
 
         _context.Taxes.AddRange(taxes);
@@ -98,22 +105,24 @@ public class DatabaseSeeder
 
     private async Task SeedClientsAsync()
     {
-        var clients = new[]
-        {
-            new Client("Acme Corporation", "contact@acme.com"),
-            new Client("TechStart SAS", "hello@techstart.fr"),
-            new Client("Global Solutions Inc", "info@globalsolutions.com")
-        };
+        // French B2B Client
+        var frenchClient = new Client("Acme Corporation France", "contact@acme.fr", ClientType.Company);
+        frenchClient.UpdateFrenchBusinessInfo("98765432109876", "FR98765432109");
+        frenchClient.UpdateAddress("456 Avenue des Champs-Élysées", "Paris", "75008", "France");
+        frenchClient.UpdateBusinessSettings("EUR", 30);
 
-        clients[0].UpdateAddress("456 Commerce Ave", "Paris", "75002", "France");
-        clients[0].UpdateBusinessSettings("EUR", 30);
+        // French B2C Client
+        var frenchIndividual = new Client("Jean Dupont", "jean.dupont@email.fr", ClientType.Individual);
+        frenchIndividual.UpdateAddress("789 Rue du Commerce", "Lyon", "69001", "France");
+        frenchIndividual.UpdateBusinessSettings("EUR", 15);
 
-        clients[1].UpdateAddress("789 Innovation Blvd", "Lyon", "69001", "France");
-        clients[1].UpdateBusinessSettings("EUR", 15);
+        // Danish B2B Client
+        var danishClient = new Client("Copenhagen Tech ApS", "info@cphtech.dk", ClientType.Company);
+        danishClient.UpdateDanishBusinessInfo("12345678", "DK12345678");
+        danishClient.UpdateAddress("Nørrebrogade 123", "Copenhagen", "2200", "Denmark");
+        danishClient.UpdateBusinessSettings("DKK", 30);
 
-        clients[2].UpdateAddress("321 Enterprise St", "Marseille", "13001", "France");
-        clients[2].UpdateBusinessSettings("EUR", 45);
-
+        var clients = new[] { frenchClient, frenchIndividual, danishClient };
         _context.Clients.AddRange(clients);
         await Task.CompletedTask;
     }
@@ -122,27 +131,32 @@ public class DatabaseSeeder
     {
         var products = new[]
         {
-            new Product("Web Development", 85.00m, "EUR"),
-            new Product("Consulting Services", 120.00m, "EUR"),
-            new Product("UI/UX Design", 95.00m, "EUR"),
-            new Product("Project Management", 100.00m, "EUR"),
-            new Product("Technical Support", 60.00m, "EUR")
+            new Product("Développement Web", 85.00m, "EUR"),
+            new Product("Conseil IT", 120.00m, "EUR"),
+            new Product("Design UI/UX", 95.00m, "EUR"),
+            new Product("Gestion de Projet", 100.00m, "EUR"),
+            new Product("Support Technique", 60.00m, "EUR")
         };
 
-        products[0].UpdateDetails("Web Development", "Full-stack web development services", "WEB-001");
-        products[0].SetUnit("hours");
+        products[0].UpdateDetails("Développement Web", "Services de développement full-stack", "WEB-001");
+        products[0].SetUnit("heures");
+        products[0].UpdatePricing(85.00m, "EUR", 20.0m);
 
-        products[1].UpdateDetails("Consulting Services", "IT consulting and advisory services", "CONS-001");
-        products[1].SetUnit("hours");
+        products[1].UpdateDetails("Conseil IT", "Conseil et accompagnement IT", "CONS-001");
+        products[1].SetUnit("heures");
+        products[1].UpdatePricing(120.00m, "EUR", 20.0m);
 
-        products[2].UpdateDetails("UI/UX Design", "User interface and experience design", "DESIGN-001");
-        products[2].SetUnit("hours");
+        products[2].UpdateDetails("Design UI/UX", "Conception d'interfaces utilisateur", "DESIGN-001");
+        products[2].SetUnit("heures");
+        products[2].UpdatePricing(95.00m, "EUR", 20.0m);
 
-        products[3].UpdateDetails("Project Management", "Project planning and coordination", "PM-001");
-        products[3].SetUnit("hours");
+        products[3].UpdateDetails("Gestion de Projet", "Planification et coordination de projets", "PM-001");
+        products[3].SetUnit("heures");
+        products[3].UpdatePricing(100.00m, "EUR", 20.0m);
 
-        products[4].UpdateDetails("Technical Support", "Technical assistance and support", "SUPPORT-001");
-        products[4].SetUnit("hours");
+        products[4].UpdateDetails("Support Technique", "Assistance technique", "SUPPORT-001");
+        products[4].SetUnit("heures");
+        products[4].UpdatePricing(60.00m, "EUR", 20.0m);
 
         _context.Products.AddRange(products);
         await Task.CompletedTask;
@@ -150,18 +164,23 @@ public class DatabaseSeeder
 
     private async Task SeedInvoicesAsync()
     {
-        // We'll get the first client to create sample invoices
         var client = await _context.Clients.FirstAsync();
         var products = await _context.Products.ToListAsync();
+        var company = await _context.Companies.FirstAsync();
 
         var invoice = new Invoice(
             "INV-2025-001",
             client.Id,
             DateTime.UtcNow.AddDays(-10),
-            DateTime.UtcNow.AddDays(20)
+            DateTime.UtcNow.AddDays(20),
+            "EUR"
         );
 
-        // Add some lines
+        // Set French legal mentions
+        invoice.SetFrenchLegalMentions(company.Siret!, company.ApeCode!, company.IsVatExempt);
+        invoice.SetPaymentTerms("Net 30 jours", 10.0m, 40.0m);
+
+        // Add invoice lines
         invoice.AddLine(new InvoiceLine(
             invoice.Id,
             products[0].Name,

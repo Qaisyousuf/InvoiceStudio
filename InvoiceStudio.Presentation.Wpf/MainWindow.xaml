@@ -6,6 +6,7 @@
         Width="1200"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
+
     <Window.Resources>
         <!-- Navigation Button Style -->
         <Style x:Key="NavigationButtonStyle" TargetType="Button">
@@ -20,7 +21,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                            Padding="{TemplateBinding Padding}">
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                         </Border>
                     </ControlTemplate>
@@ -33,15 +34,15 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
+
     <Grid>
-        <!-- Define columns: Sidebar | Content -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Left Sidebar -->
-        <Border Grid.Column="0" Background="#2C3E50" BorderThickness="0">
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="#2C3E50">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -49,7 +50,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Logo/Header -->
+                <!-- Logo -->
                 <Border Grid.Row="0" Background="#1A252F" Padding="20">
                     <StackPanel>
                         <TextBlock Text="InvoiceStudio" 
@@ -65,46 +66,32 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Navigation Menu -->
+                <!-- Navigation -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,20,0,0">
-
-                        <!-- Dashboard -->
-                        <Button x:Name="DashboardButton" 
-                                Style="{StaticResource NavigationButtonStyle}"
+                        <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="📊 Dashboard"
-                                Click="DashboardButton_Click"/>
+                                Command="{Binding NavigateToDashboardCommand}"/>
 
-                        <!-- Invoices -->
-                        <Button x:Name="InvoicesButton" 
-                                Style="{StaticResource NavigationButtonStyle}"
+                        <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="📄 Invoices"
-                                Click="InvoicesButton_Click"/>
+                                Command="{Binding NavigateToInvoicesCommand}"/>
 
-                        <!-- Clients -->
-                        <Button x:Name="ClientsButton" 
-                                Style="{StaticResource NavigationButtonStyle}"
+                        <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="👥 Clients"
-                                Click="ClientsButton_Click"/>
+                                Command="{Binding NavigateToClientsCommand}"/>
 
-                        <!-- Products -->
-                        <Button x:Name="ProductsButton" 
-                                Style="{StaticResource NavigationButtonStyle}"
+                        <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="📦 Products"
-                                Click="ProductsButton_Click"/>
+                                Command="{Binding NavigateToProductsCommand}"/>
 
-                        <!-- Reports -->
-                        <Button x:Name="ReportsButton" 
-                                Style="{StaticResource NavigationButtonStyle}"
+                        <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="📈 Reports"
-                                Click="ReportsButton_Click"/>
+                                Command="{Binding NavigateToReportsCommand}"/>
 
-                        <!-- Settings -->
-                        <Button x:Name="SettingsButton" 
-                                Style="{StaticResource NavigationButtonStyle}"
+                        <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="⚙️ Settings"
-                                Click="SettingsButton_Click"/>
-
+                                Command="{Binding NavigateToSettingsCommand}"/>
                     </StackPanel>
                 </ScrollViewer>
 
@@ -118,125 +105,10 @@
             </Grid>
         </Border>
 
-        <!-- Main Content Area -->
+        <!-- Main Content -->
         <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <!-- Top Bar -->
-            <Border Grid.Row="0" Background="White" 
-                    BorderBrush="#E0E0E0" 
-                    BorderThickness="0,0,0,1"
-                    Padding="20,15">
-                <Grid>
-                    <TextBlock x:Name="PageTitle" 
-                               Text="Dashboard" 
-                               FontSize="24" 
-                               FontWeight="SemiBold"
-                               Foreground="#2C3E50"
-                               VerticalAlignment="Center"/>
-
-                    <StackPanel Orientation="Horizontal" 
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center">
-                        <TextBlock Text="Welcome back!" 
-                                   FontSize="14" 
-                                   Foreground="#7F8C8D"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,10,0"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- Content Frame -->
-            <Border Grid.Row="1" Background="White" Margin="20">
-                <!-- Content Frame -->
-                <Border Grid.Row="1" Background="White" Margin="20">
-                    <Grid>
-                        <!-- Welcome content (shown by default) -->
-                        <ScrollViewer x:Name="WelcomeContent" Visibility="Visible">
-                            <StackPanel Margin="40" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="🎉 Welcome to InvoiceStudio!" 
-                           FontSize="32" 
-                           FontWeight="Bold"
-                           Foreground="#2C3E50"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,20"/>
-
-                                <TextBlock Text="Your AI-powered invoice management system is ready." 
-                           FontSize="16" 
-                           Foreground="#7F8C8D"
-                           HorizontalAlignment="Center"
-                           TextWrapping="Wrap"
-                           MaxWidth="600"
-                           TextAlignment="Center"
-                           Margin="0,0,0,40"/>
-
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Border Background="#3498DB" 
-                            CornerRadius="5" 
-                            Padding="20,15"
-                            Margin="10">
-                                        <StackPanel>
-                                            <TextBlock Text="1" 
-                                       FontSize="32" 
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"/>
-                                            <TextBlock Text="Invoices" 
-                                       FontSize="14" 
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Border>
-
-                                    <Border Background="#2ECC71" 
-                            CornerRadius="5" 
-                            Padding="20,15"
-                            Margin="10">
-                                        <StackPanel>
-                                            <TextBlock Text="3" 
-                                       FontSize="32" 
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"/>
-                                            <TextBlock Text="Clients" 
-                                       FontSize="14" 
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Border>
-
-                                    <Border Background="#E74C3C" 
-                            CornerRadius="5" 
-                            Padding="20,15"
-                            Margin="10">
-                                        <StackPanel>
-                                            <TextBlock Text="5" 
-                                       FontSize="32" 
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"/>
-                                            <TextBlock Text="Products" 
-                                       FontSize="14" 
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Border>
-                                </StackPanel>
-                            </StackPanel>
-                        </ScrollViewer>
-
-                        <!-- Content Frame (for future pages) -->
-                        <Frame x:Name="ContentFrame" 
-               NavigationUIVisibility="Hidden"
-               Background="Transparent"
-               Visibility="Collapsed"/>
-                    </Grid>
-                </Border>
-            </Border>
+            <!-- Content Area - Bound to CurrentView -->
+            <ContentControl Content="{Binding CurrentView}"/>
         </Grid>
     </Grid>
 </Window>

@@ -35,6 +35,39 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.Property(i => i.PaidAmount)
             .HasPrecision(18, 2);
 
+        // French/Danish Legal Fields
+        builder.Property(i => i.LegalMentions)
+            .HasMaxLength(2000);
+
+        builder.Property(i => i.PaymentTerms)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(i => i.LatePenaltyRate)
+            .HasPrecision(5, 2);
+
+        builder.Property(i => i.FixedRecoveryFee)
+            .HasPrecision(18, 2);
+
+        builder.Property(i => i.EarlyPaymentDiscountRate)
+            .HasPrecision(5, 2);
+
+        builder.Property(i => i.ReverseTaxMention)
+            .HasMaxLength(200);
+
+        builder.Property(i => i.Notes)
+            .HasMaxLength(2000);
+
+        builder.Property(i => i.Terms)
+            .HasMaxLength(2000);
+
+        // Indexes for Performance
+        builder.HasIndex(i => i.InvoiceNumber).IsUnique();
+        builder.HasIndex(i => i.ClientId);
+        builder.HasIndex(i => i.Status);
+        builder.HasIndex(i => i.IssueDate);
+        builder.HasIndex(i => i.DueDate);
+
         // Relationships
         builder.HasOne(i => i.Client)
             .WithMany()

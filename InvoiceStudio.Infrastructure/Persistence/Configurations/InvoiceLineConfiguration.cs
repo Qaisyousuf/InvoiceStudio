@@ -40,6 +40,15 @@ public class InvoiceLineConfiguration : IEntityTypeConfiguration<InvoiceLine>
         builder.Property(l => l.Total)
             .HasPrecision(18, 2);
 
+        builder.Property(l => l.Unit)
+            .IsRequired()
+            .HasMaxLength(20);
+
+        // Indexes for Performance
+        builder.HasIndex(l => l.InvoiceId);
+        builder.HasIndex(l => l.ProductId);
+        builder.HasIndex(l => l.LineOrder);
+
         // Relationships
         builder.HasOne(l => l.Product)
             .WithMany()

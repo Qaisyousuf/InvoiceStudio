@@ -36,5 +36,10 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Unit)
             .IsRequired()
             .HasMaxLength(20);
+
+        // Indexes for Performance
+        builder.HasIndex(p => p.Sku);
+        builder.HasIndex(p => p.Name);
+        builder.HasIndex(p => p.IsActive);
     }
 }

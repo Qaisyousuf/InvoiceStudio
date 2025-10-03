@@ -27,6 +27,11 @@ public class AttachmentConfiguration : IEntityTypeConfiguration<Attachment>
         builder.Property(a => a.Description)
             .HasMaxLength(500);
 
+        // Indexes for Performance
+        builder.HasIndex(a => a.InvoiceId);
+        builder.HasIndex(a => a.Type);
+        builder.HasIndex(a => a.CreatedAt);
+
         // Relationships
         builder.HasOne(a => a.Invoice)
             .WithMany()

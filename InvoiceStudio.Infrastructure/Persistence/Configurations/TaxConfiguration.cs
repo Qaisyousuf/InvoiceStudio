@@ -26,5 +26,10 @@ public class TaxConfiguration : IEntityTypeConfiguration<Tax>
         builder.Property(t => t.Country)
             .IsRequired()
             .HasMaxLength(2);
+
+        // Indexes for Performance
+        builder.HasIndex(t => t.Country);
+        builder.HasIndex(t => t.IsActive);
+        builder.HasIndex(t => t.IsDefault);
     }
 }

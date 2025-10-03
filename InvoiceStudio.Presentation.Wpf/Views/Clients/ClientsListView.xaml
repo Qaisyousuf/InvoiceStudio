@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="InvoiceStudio.Presentation.Wpf.Views.Clients.ClientsListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="1000">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Clients" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Refresh" 
+                            Command="{Binding LoadClientsCommand}"
+                            Margin="0,0,10,0"
+                            Padding="15,8"
+                            Background="#34495E"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+
+                    <Button Content="+ New Client" 
+                            Command="{Binding CreateClientCommand}"
+                            Padding="15,8"
+                            Background="#27AE60"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Client List -->
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding Clients}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  Background="White"
+                  RowBackground="White"
+                  AlternatingRowBackground="#F8F9FA"
+                  BorderThickness="0"
+                  Margin="20"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" 
+                                    Binding="{Binding Name, Mode=OneWay}" 
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="Type" 
+                                    Binding="{Binding Type, Mode=OneWay}" 
+                                    Width="120"/>
+
+                <DataGridTextColumn Header="Email" 
+                                    Binding="{Binding Email, Mode=OneWay, TargetNullValue='-'}" 
+                                    Width="200"/>
+
+                <DataGridTextColumn Header="Phone" 
+                                    Binding="{Binding Phone, Mode=OneWay, TargetNullValue='-'}" 
+                                    Width="150"/>
+
+                <DataGridTextColumn Header="Country" 
+                                    Binding="{Binding Country, Mode=OneWay, TargetNullValue='-'}" 
+                                    Width="100"/>
+
+                <DataGridTextColumn Header="Currency" 
+                                    Binding="{Binding PreferredCurrency, Mode=OneWay}" 
+                                    Width="100"/>
+
+                <DataGridCheckBoxColumn Header="Active" 
+                                        Binding="{Binding IsActive, Mode=OneWay}" 
+                                        Width="80"/>
+
+                <DataGridTemplateColumn Header="Actions" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Edit" 
+                                        Command="{Binding DataContext.EditClientCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Margin="0,0,5,0"
+                                        Padding="10,5"
+                                        Background="#3498DB"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Cursor="Hand"/>
+
+                                <Button Content="Delete" 
+                                        Command="{Binding DataContext.DeleteClientCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Padding="10,5"
+                                        Background="#E74C3C"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Cursor="Hand"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
