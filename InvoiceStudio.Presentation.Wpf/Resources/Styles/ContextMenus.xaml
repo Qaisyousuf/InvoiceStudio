@@ -1,0 +1,247 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base ContextMenu Style -->
+    <Style x:Key="BaseContextMenu" TargetType="ContextMenu">
+        <Setter Property="Background" Value="{StaticResource BackgroundSecondary}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="HasDropShadow" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" 
+                                            BlurRadius="16" 
+                                            Opacity="0.6" 
+                                            ShadowDepth="4"/>
+                        </Border.Effect>
+                        <StackPanel IsItemsHost="True"
+                                  KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ContextMenu Item Style -->
+    <Style x:Key="BaseContextMenuItem" TargetType="MenuItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Icon -->
+                            <ContentPresenter Grid.Column="0"
+                                            ContentSource="Icon"
+                                            Margin="0,0,12,0"
+                                            VerticalAlignment="Center"/>
+
+                            <!-- Header Text -->
+                            <ContentPresenter Grid.Column="1"
+                                            ContentSource="Header"
+                                            VerticalAlignment="Center"/>
+
+                            <!-- Shortcut/Submenu Arrow -->
+                            <TextBlock Grid.Column="2"
+                                     Text="{TemplateBinding InputGestureText}"
+                                     Foreground="{StaticResource TextTertiary}"
+                                     FontSize="12"
+                                     Margin="24,0,0,0"
+                                     VerticalAlignment="Center"/>
+
+                            <!-- Submenu Popup -->
+                            <Popup x:Name="PART_Popup"
+                                   IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                   Placement="Right"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade">
+                                <Border Background="{StaticResource BackgroundSecondary}"
+                                        BorderBrush="{StaticResource BorderDefault}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="4"
+                                        Margin="4,0,0,0">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" 
+                                                        BlurRadius="16" 
+                                                        Opacity="0.6" 
+                                                        ShadowDepth="4"/>
+                                    </Border.Effect>
+                                    <StackPanel IsItemsHost="True"/>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#3B82F6" Opacity="0.1"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="True">
+                            <Setter TargetName="PART_Popup" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ContextMenu Item with Icon -->
+    <Style x:Key="ContextMenuItemIcon" TargetType="Border">
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Margin" Value="0,0,12,0"/>
+    </Style>
+
+    <!-- ContextMenu Separator -->
+    <Style x:Key="ContextMenuSeparator" TargetType="Separator">
+        <Setter Property="Background" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Margin" Value="8,4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Background="{TemplateBinding Background}"
+                            Height="{TemplateBinding Height}"
+                            Margin="{TemplateBinding Margin}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Danger MenuItem (Delete, Remove, etc.) -->
+    <Style x:Key="DangerMenuItem" TargetType="MenuItem" BasedOn="{StaticResource BaseContextMenuItem}">
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="#EF4444" Opacity="0.15"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Success MenuItem -->
+    <Style x:Key="SuccessMenuItem" TargetType="MenuItem" BasedOn="{StaticResource BaseContextMenuItem}">
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="#10B981" Opacity="0.15"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- MenuItem Header (for grouping items) -->
+    <Style x:Key="MenuItemHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Padding" Value="12,8,12,4"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+    </Style>
+
+    <!-- ContextMenu with Header -->
+    <Style x:Key="ContextMenuWithHeader" TargetType="ContextMenu" BasedOn="{StaticResource BaseContextMenu}">
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <!-- ContextMenu Header Container -->
+    <Style x:Key="ContextMenuHeaderContainer" TargetType="Border">
+        <Setter Property="Background" Value="#0F1419"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    </Style>
+
+    <!-- ContextMenu Header Title -->
+    <Style x:Key="ContextMenuHeaderTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!-- ContextMenu Header Subtitle -->
+    <Style x:Key="ContextMenuHeaderSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Margin" Value="0,2,0,0"/>
+    </Style>
+
+    <!-- MenuItem with Badge -->
+    <Style x:Key="MenuItemWithBadge" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Primary}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="6,2"/>
+        <Setter Property="Margin" Value="8,0,0,0"/>
+    </Style>
+
+    <!-- MenuItem Badge Text -->
+    <Style x:Key="MenuItemBadgeText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <!-- MenuItem with Keyboard Shortcut -->
+    <Style x:Key="MenuItemShortcut" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Margin" Value="24,0,0,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Checkable MenuItem -->
+    <Style x:Key="CheckableMenuItem" TargetType="MenuItem" BasedOn="{StaticResource BaseContextMenuItem}">
+        <Setter Property="IsCheckable" Value="True"/>
+    </Style>
+
+    <!-- MenuItem Check Icon -->
+    <Style x:Key="MenuItemCheckIcon" TargetType="TextBlock">
+        <Setter Property="Text" Value="✓"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+        <Setter Property="Margin" Value="0,0,8,0"/>
+    </Style>
+
+    <!-- Compact ContextMenu Item (smaller) -->
+    <Style x:Key="CompactMenuItem" TargetType="MenuItem" BasedOn="{StaticResource BaseContextMenuItem}">
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+</ResourceDictionary>

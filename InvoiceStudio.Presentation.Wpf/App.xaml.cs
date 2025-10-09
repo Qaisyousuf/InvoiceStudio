@@ -3,7 +3,6 @@ using InvoiceStudio.Infrastructure.Persistence;
 using InvoiceStudio.Infrastructure.Persistence.Repositories;
 using InvoiceStudio.Presentation.Wpf.ViewModels;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
-using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -66,8 +65,7 @@ public partial class App : System.Windows.Application
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
         // MainWindow
 
-        services.AddTransient<InvoicesListViewModel>();
-        services.AddTransient<InvoicesListView>();
+    
         services.AddTransient<ClientsListViewModel>();
         services.AddTransient<ClientsListView>();
         services.AddTransient<ProductsListViewModel>();

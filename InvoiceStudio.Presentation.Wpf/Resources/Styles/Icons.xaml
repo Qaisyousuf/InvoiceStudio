@@ -1,0 +1,375 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================ -->
+    <!-- BASE ICON STYLES -->
+    <!-- ============================================ -->
+
+    <!-- Base Icon Text (Emoji icons) -->
+    <Style x:Key="BaseIcon" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Segoe UI Emoji"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- ICON SIZES -->
+    <!-- ============================================ -->
+
+    <!-- Tiny Icon (Navigation - 16px) -->
+    <Style x:Key="TinyIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
+    <!-- Small Icon (Section headers - 20px) -->
+    <Style x:Key="SmallIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="FontSize" Value="20"/>
+    </Style>
+
+    <!-- Medium Icon (Stat cards - 24px) -->
+    <Style x:Key="MediumIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="FontSize" Value="24"/>
+    </Style>
+
+    <!-- Large Icon (Special cards - 32px) -->
+    <Style x:Key="LargeIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="FontSize" Value="32"/>
+    </Style>
+
+    <!-- Extra Large Icon (Hero sections - 48px) -->
+    <Style x:Key="ExtraLargeIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="FontSize" Value="48"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- COLORED ICON STYLES -->
+    <!-- ============================================ -->
+
+    <!-- Blue Icons -->
+    <Style x:Key="BlueIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <!-- Purple Icons -->
+    <Style x:Key="PurpleIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryLight}"/>
+    </Style>
+
+    <!-- Green Icons -->
+    <Style x:Key="GreenIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+    </Style>
+
+    <!-- Orange Icons -->
+    <Style x:Key="OrangeIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Warning}"/>
+    </Style>
+
+    <!-- Pink Icons -->
+    <Style x:Key="PinkIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="#EC4899"/>
+    </Style>
+
+    <!-- Red Icons -->
+    <Style x:Key="RedIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+    </Style>
+
+    <!-- White Icons -->
+    <Style x:Key="WhiteIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+    </Style>
+
+    <!-- Gray Icons -->
+    <Style x:Key="GrayIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- COMBINED SIZE + COLOR STYLES -->
+    <!-- ============================================ -->
+
+    <!-- Navigation Icons (Tiny + Colored) -->
+    <Style x:Key="NavIconBlue" TargetType="TextBlock" BasedOn="{StaticResource TinyIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style x:Key="NavIconPurple" TargetType="TextBlock" BasedOn="{StaticResource TinyIcon}">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryLight}"/>
+    </Style>
+
+    <Style x:Key="NavIconGreen" TargetType="TextBlock" BasedOn="{StaticResource TinyIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+    </Style>
+
+    <Style x:Key="NavIconOrange" TargetType="TextBlock" BasedOn="{StaticResource TinyIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Warning}"/>
+    </Style>
+
+    <Style x:Key="NavIconPink" TargetType="TextBlock" BasedOn="{StaticResource TinyIcon}">
+        <Setter Property="Foreground" Value="#EC4899"/>
+    </Style>
+
+    <!-- Section Header Icons (Small + Colored) -->
+    <Style x:Key="SectionIconBlue" TargetType="TextBlock" BasedOn="{StaticResource SmallIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style x:Key="SectionIconPurple" TargetType="TextBlock" BasedOn="{StaticResource SmallIcon}">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryLight}"/>
+    </Style>
+
+    <Style x:Key="SectionIconGreen" TargetType="TextBlock" BasedOn="{StaticResource SmallIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+    </Style>
+
+    <Style x:Key="SectionIconOrange" TargetType="TextBlock" BasedOn="{StaticResource SmallIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Warning}"/>
+    </Style>
+
+    <!-- Stat Card Icons (Medium + Colored) -->
+    <Style x:Key="StatIconBlue" TargetType="TextBlock" BasedOn="{StaticResource MediumIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style x:Key="StatIconPurple" TargetType="TextBlock" BasedOn="{StaticResource MediumIcon}">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryLight}"/>
+    </Style>
+
+    <Style x:Key="StatIconGreen" TargetType="TextBlock" BasedOn="{StaticResource MediumIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+    </Style>
+
+    <Style x:Key="StatIconOrange" TargetType="TextBlock" BasedOn="{StaticResource MediumIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Warning}"/>
+    </Style>
+
+    <Style x:Key="StatIconRed" TargetType="TextBlock" BasedOn="{StaticResource MediumIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- INTERACTIVE ICON STATES -->
+    <!-- ============================================ -->
+
+    <!-- Clickable Icon -->
+    <Style x:Key="ClickableIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Icon Button (For toolbar icons) -->
+    <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="6">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#3B82F6" Opacity="0.1"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#3B82F6" Opacity="0.2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- STATUS ICONS -->
+    <!-- ============================================ -->
+
+    <!-- Success Status Icon -->
+    <Style x:Key="SuccessStatusIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="✓"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- Warning Status Icon -->
+    <Style x:Key="WarningStatusIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Warning}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="⚠"/>
+    </Style>
+
+    <!-- Error Status Icon -->
+    <Style x:Key="ErrorStatusIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="✗"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- Info Status Icon -->
+    <Style x:Key="InfoStatusIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="ⓘ"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- SPECIAL ICONS -->
+    <!-- ============================================ -->
+
+    <!-- Loading Spinner Icon -->
+    <Style x:Key="LoadingIcon" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Text" Value="⟳"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <RotateTransform/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard RepeatBehavior="Forever">
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                       From="0" To="360" Duration="0:0:1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Chevron Icons -->
+    <Style x:Key="ChevronRight" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Text" Value="›"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+    </Style>
+
+    <Style x:Key="ChevronDown" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Text" Value="⌄"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+    </Style>
+
+    <Style x:Key="ChevronUp" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Text" Value="⌃"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+    </Style>
+
+    <!-- Arrow Icons -->
+    <Style x:Key="ArrowUp" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Text" Value="↑"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style x:Key="ArrowDown" TargetType="TextBlock" BasedOn="{StaticResource BaseIcon}">
+        <Setter Property="Text" Value="↓"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- ICON BADGES -->
+    <!-- ============================================ -->
+
+    <!-- Live Indicator Dot -->
+    <Style x:Key="LiveDot" TargetType="Ellipse">
+        <Setter Property="Width" Value="6"/>
+        <Setter Property="Height" Value="6"/>
+        <Setter Property="Fill" Value="{StaticResource Success}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Notification Badge -->
+    <Style x:Key="NotificationBadge" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Error}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="MinWidth" Value="20"/>
+        <Setter Property="MinHeight" Value="20"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="4,2"/>
+    </Style>
+
+    <!-- Notification Badge Text -->
+    <Style x:Key="NotificationBadgeText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- CONTEXTUAL ICONS -->
+    <!-- ============================================ -->
+
+    <!-- Dashboard Icons -->
+    <Style x:Key="DashboardIcon" TargetType="TextBlock" BasedOn="{StaticResource NavIconBlue}">
+        <Setter Property="Text" Value="📊"/>
+    </Style>
+
+    <!-- Invoice Icons -->
+    <Style x:Key="InvoiceIcon" TargetType="TextBlock" BasedOn="{StaticResource NavIconPurple}">
+        <Setter Property="Text" Value="📄"/>
+    </Style>
+
+    <!-- Client Icons -->
+    <Style x:Key="ClientIcon" TargetType="TextBlock" BasedOn="{StaticResource NavIconGreen}">
+        <Setter Property="Text" Value="👥"/>
+    </Style>
+
+    <!-- Product Icons -->
+    <Style x:Key="ProductIcon" TargetType="TextBlock" BasedOn="{StaticResource NavIconOrange}">
+        <Setter Property="Text" Value="📦"/>
+    </Style>
+
+    <!-- Settings Icons -->
+    <Style x:Key="SettingsIcon" TargetType="TextBlock" BasedOn="{StaticResource NavIconPink}">
+        <Setter Property="Text" Value="⚙️"/>
+    </Style>
+
+    <!-- Money Icons -->
+    <Style x:Key="MoneyIcon" TargetType="TextBlock" BasedOn="{StaticResource StatIconBlue}">
+        <Setter Property="Text" Value="💰"/>
+    </Style>
+
+    <!-- Timer Icons -->
+    <Style x:Key="TimerIcon" TargetType="TextBlock" BasedOn="{StaticResource StatIconOrange}">
+        <Setter Property="Text" Value="⏳"/>
+    </Style>
+
+    <!-- Warning Icons -->
+    <Style x:Key="WarningIcon" TargetType="TextBlock" BasedOn="{StaticResource StatIconRed}">
+        <Setter Property="Text" Value="⚠️"/>
+    </Style>
+
+</ResourceDictionary>

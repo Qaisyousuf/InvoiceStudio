@@ -1,0 +1,78 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Page Header Container -->
+    <Style x:Key="PageHeader" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource BackgroundSecondary}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="32,24"/>
+    </Style>
+
+    <!-- Page Header Grid (for title + actions layout) -->
+    <Style x:Key="PageHeaderGrid" TargetType="Grid">
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+
+    <!-- Page Header Left Section -->
+    <Style x:Key="PageHeaderLeft" TargetType="StackPanel">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Page Header Right Section (Actions) -->
+    <Style x:Key="PageHeaderActions" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <!-- Section Header Container -->
+    <Style x:Key="SectionHeader" TargetType="Border">
+        <Setter Property="Padding" Value="24,28"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Section Header Content Grid -->
+    <Style x:Key="SectionHeaderGrid" TargetType="Grid">
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+
+    <!-- Section Header Left (Icon + Title) -->
+    <Style x:Key="SectionHeaderLeft" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Section Header Title Stack (Title + Subtitle) -->
+    <Style x:Key="SectionHeaderTitleStack" TargetType="StackPanel">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="12,0,0,0"/>
+    </Style>
+
+    <!-- Section Header Right (Badges, actions) -->
+    <Style x:Key="SectionHeaderRight" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <!-- Inline Header (for smaller sections within pages) -->
+    <Style x:Key="InlineHeader" TargetType="Grid">
+        <Setter Property="Margin" Value="0,0,0,16"/>
+    </Style>
+
+    <!-- Header with Divider (adds bottom margin + visual separator) -->
+    <Style x:Key="HeaderWithDivider" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0,0,0,24"/>
+    </Style>
+
+    <!-- Header Divider Line -->
+    <Style x:Key="HeaderDivider" TargetType="Border">
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Background" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="Margin" Value="0,16,0,0"/>
+    </Style>
+
+</ResourceDictionary>

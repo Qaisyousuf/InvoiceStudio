@@ -1,0 +1,150 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================ -->
+    <!-- BACKGROUND COLORS -->
+    <!-- ============================================ -->
+
+    <!-- Main Backgrounds -->
+    <SolidColorBrush x:Key="BackgroundPrimary" Color="#0A0E1A"/>
+    <SolidColorBrush x:Key="BackgroundSecondary" Color="#111827"/>
+    <SolidColorBrush x:Key="BackgroundTertiary" Color="#1F2937"/>
+    <SolidColorBrush x:Key="BackgroundQuaternary" Color="#374151"/>
+
+    <!-- Card Backgrounds -->
+    <SolidColorBrush x:Key="CardBackground" Color="#1F2937"/>
+    <SolidColorBrush x:Key="CardHeaderBackground" Color="#0F1419"/>
+
+    <!-- Hover States -->
+    <SolidColorBrush x:Key="HoverBackground" Color="#374151"/>
+    <SolidColorBrush x:Key="HoverLight" Color="#4B5563"/>
+
+    <!-- ============================================ -->
+    <!-- BRAND COLORS -->
+    <!-- ============================================ -->
+
+    <SolidColorBrush x:Key="Primary" Color="#3B82F6"/>
+    <SolidColorBrush x:Key="PrimaryDark" Color="#2563EB"/>
+    <SolidColorBrush x:Key="PrimaryLight" Color="#60A5FA"/>
+
+    <SolidColorBrush x:Key="Secondary" Color="#6366F1"/>
+    <SolidColorBrush x:Key="SecondaryDark" Color="#4F46E5"/>
+    <SolidColorBrush x:Key="SecondaryLight" Color="#8B5CF6"/>
+
+    <!-- ============================================ -->
+    <!-- TEXT COLORS -->
+    <!-- ============================================ -->
+
+    <SolidColorBrush x:Key="TextPrimary" Color="#E8EAF0"/>
+    <SolidColorBrush x:Key="TextSecondary" Color="#9CA3AF"/>
+    <SolidColorBrush x:Key="TextTertiary" Color="#6B7280"/>
+    <SolidColorBrush x:Key="TextWhite" Color="#FFFFFF"/>
+
+    <!-- ============================================ -->
+    <!-- STATUS COLORS -->
+    <!-- ============================================ -->
+
+    <SolidColorBrush x:Key="Success" Color="#10B981"/>
+    <SolidColorBrush x:Key="Warning" Color="#F97316"/>
+    <SolidColorBrush x:Key="Error" Color="#EF4444"/>
+    <SolidColorBrush x:Key="Info" Color="#3B82F6"/>
+
+    <!-- ============================================ -->
+    <!-- BORDER COLORS -->
+    <!-- ============================================ -->
+
+    <SolidColorBrush x:Key="BorderDefault" Color="#1F2937"/>
+    <SolidColorBrush x:Key="BorderHover" Color="#3B82F6"/>
+    <SolidColorBrush x:Key="BorderActive" Color="#60A5FA"/>
+
+    <!-- ============================================ -->
+    <!-- ICON BACKGROUND COLORS -->
+    <!-- ============================================ -->
+
+    <SolidColorBrush x:Key="IconBlue" Color="#1E3A8A"/>
+    <SolidColorBrush x:Key="IconBlueBg" Color="#1E40AF"/>
+    <SolidColorBrush x:Key="IconPurple" Color="#5B21B6"/>
+    <SolidColorBrush x:Key="IconPurpleBg" Color="#7C3AED"/>
+    <SolidColorBrush x:Key="IconGreen" Color="#047857"/>
+    <SolidColorBrush x:Key="IconGreenBg" Color="#059669"/>
+    <SolidColorBrush x:Key="IconOrange" Color="#C2410C"/>
+    <SolidColorBrush x:Key="IconOrangeBg" Color="#EA580C"/>
+    <SolidColorBrush x:Key="IconPink" Color="#BE185D"/>
+    <SolidColorBrush x:Key="IconPinkBg" Color="#DB2777"/>
+    <SolidColorBrush x:Key="IconRed" Color="#B91C1C"/>
+    <SolidColorBrush x:Key="IconRedBg" Color="#DC2626"/>
+
+    <!-- ============================================ -->
+    <!-- STATUS BADGE COLORS -->
+    <!-- ============================================ -->
+
+    <!-- Success Badge (Paid, Active, Live) -->
+    <SolidColorBrush x:Key="BadgeSuccessBg" Color="#064E3B"/>
+    <SolidColorBrush x:Key="BadgeSuccessText" Color="#10B981"/>
+
+    <!-- Warning Badge (Pending) -->
+    <SolidColorBrush x:Key="BadgeWarningBg" Color="#7C2D12"/>
+    <SolidColorBrush x:Key="BadgeWarningText" Color="#F97316"/>
+
+    <!-- Error Badge (Overdue) -->
+    <SolidColorBrush x:Key="BadgeErrorBg" Color="#7F1D1D"/>
+    <SolidColorBrush x:Key="BadgeErrorText" Color="#EF4444"/>
+
+    <!-- Info Badge -->
+    <SolidColorBrush x:Key="BadgeInfoBg" Color="#1E3A8A"/>
+    <SolidColorBrush x:Key="BadgeInfoText" Color="#3B82F6"/>
+
+    <!-- ============================================ -->
+    <!-- GRADIENT BRUSHES -->
+    <!-- ============================================ -->
+
+    <!-- Primary Button Gradient -->
+    <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#3B82F6" Offset="0"/>
+        <GradientStop Color="#6366F1" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Primary Button Hover Gradient -->
+    <LinearGradientBrush x:Key="PrimaryHoverGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#2563EB" Offset="0"/>
+        <GradientStop Color="#4F46E5" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Card Background Gradient -->
+    <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1F2937" Offset="0"/>
+        <GradientStop Color="#111827" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Top Border Gradient (for cards) -->
+    <LinearGradientBrush x:Key="TopBorderGradient" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#3B82F6" Offset="0"/>
+        <GradientStop Color="#6366F1" Offset="0.5"/>
+        <GradientStop Color="#8B5CF6" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Navigation Active Gradient -->
+    <LinearGradientBrush x:Key="NavActiveGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1E3A8A" Offset="0"/>
+        <GradientStop Color="#3730A3" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Navigation Hover Gradient -->
+    <LinearGradientBrush x:Key="NavHoverGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1E40AF" Offset="0"/>
+        <GradientStop Color="#3B82F6" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- ============================================ -->
+    <!-- TRANSPARENT COLORS (for overlays) -->
+    <!-- ============================================ -->
+
+    <SolidColorBrush x:Key="OverlayLight" Color="#FFFFFF" Opacity="0.05"/>
+    <SolidColorBrush x:Key="OverlayMedium" Color="#FFFFFF" Opacity="0.1"/>
+    <SolidColorBrush x:Key="OverlayDark" Color="#000000" Opacity="0.3"/>
+
+    <!-- Hover Overlays -->
+    <SolidColorBrush x:Key="HoverOverlay" Color="#3B82F6" Opacity="0.1"/>
+    <SolidColorBrush x:Key="ActiveOverlay" Color="#3B82F6" Opacity="0.15"/>
+
+</ResourceDictionary>

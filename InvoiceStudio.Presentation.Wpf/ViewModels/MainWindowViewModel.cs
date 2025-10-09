@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using InvoiceStudio.Presentation.Wpf.ViewModels.Base;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
-using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -47,7 +46,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void NavigateToInvoices()
     {
         Title = "Invoices";
-        CurrentView = _serviceProvider.GetRequiredService<InvoicesListView>();
+     
         _logger.Information("Navigated to Invoices");
     }
 

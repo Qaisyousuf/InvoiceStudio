@@ -1,0 +1,268 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================ -->
+    <!-- PAGE LEVEL TYPOGRAPHY -->
+    <!-- ============================================ -->
+
+    <!-- Page Title (Dashboard, Invoices, etc.) -->
+    <Style x:Key="PageTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+
+    <!-- Page Subtitle (Real-time insights...) -->
+    <Style x:Key="PageSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- SECTION TYPOGRAPHY -->
+    <!-- ============================================ -->
+
+    <!-- Section Title (Recent Invoices) -->
+    <Style x:Key="SectionTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+        <Setter Property="Margin" Value="0,0,0,2"/>
+    </Style>
+
+    <!-- Section Subtitle (Latest billing activity) -->
+    <Style x:Key="SectionSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- STATISTICS TYPOGRAPHY -->
+    <!-- ============================================ -->
+
+    <!-- Stat Label (TOTAL REVENUE - uppercase) -->
+    <Style x:Key="StatLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+       
+    </Style>
+
+    <!-- Stat Value (€128,450) -->
+    <Style x:Key="StatValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="36"/>
+        <Setter Property="FontWeight" Value="ExtraBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+        <Setter Property="Margin" Value="0,12,0,12"/>
+    </Style>
+
+    <!-- Stat Change - Positive (↑ 24.5% from last month) -->
+    <Style x:Key="StatChangePositive" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+    </Style>
+
+    <!-- Stat Change - Negative -->
+    <Style x:Key="StatChangeNegative" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+    </Style>
+
+    <!-- Stat Change - Neutral -->
+    <Style x:Key="StatChangeNeutral" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- NAVIGATION TYPOGRAPHY -->
+    <!-- ============================================ -->
+
+    <!-- Logo Title (InvoiceStudio) -->
+    <Style x:Key="LogoTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+
+    <!-- Logo Subtitle (PROFESSIONAL EDITION) -->
+    <Style x:Key="LogoSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+
+    </Style>
+
+    <!-- Navigation Section Title (FAVORITES, MANAGEMENT) -->
+    <Style x:Key="NavSectionTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+        <Setter Property="Margin" Value="12,0,0,8"/>
+    </Style>
+
+    <!-- Navigation Item Text -->
+    <Style x:Key="NavItemText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    </Style>
+
+    <!-- Navigation Item Text - Active -->
+    <Style x:Key="NavItemTextActive" TargetType="TextBlock" BasedOn="{StaticResource NavItemText}">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryLight}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- TABLE TYPOGRAPHY -->
+    <!-- ============================================ -->
+
+    <!-- Table Header -->
+    <Style x:Key="TableHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+    </Style>
+
+    <!-- Table Cell -->
+    <Style x:Key="TableCell" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+    </Style>
+
+    <!-- Table Amount (money values) -->
+    <Style x:Key="TableAmount" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- BADGE TYPOGRAPHY -->
+    <!-- ============================================ -->
+
+    <!-- Status Badge Text (LIVE, PAID, PENDING) -->
+    <Style x:Key="BadgeText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+
+    </Style>
+
+    <!-- Small Badge Text -->
+    <Style x:Key="SmallBadgeText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- BODY TEXT -->
+    <!-- ============================================ -->
+
+    <!-- Body Text -->
+    <Style x:Key="BodyText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="LineHeight" Value="22"/>
+    </Style>
+
+    <!-- Body Text Secondary -->
+    <Style x:Key="BodyTextSecondary" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Setter Property="LineHeight" Value="22"/>
+    </Style>
+
+    <!-- Small Text -->
+    <Style x:Key="SmallText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    </Style>
+
+    <!-- Tiny Text -->
+    <Style x:Key="TinyText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- BUTTON TEXT -->
+    <!-- ============================================ -->
+
+    <!-- Button Text -->
+    <Style x:Key="ButtonText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+    </Style>
+
+    <!-- Primary Button Text -->
+    <Style x:Key="PrimaryButtonText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextWhite}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- FORM LABELS -->
+    <!-- ============================================ -->
+
+    <!-- Form Label -->
+    <Style x:Key="FormLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Setter Property="Margin" Value="0,0,0,6"/>
+    </Style>
+
+    <!-- Required Field Label -->
+    <Style x:Key="RequiredLabel" TargetType="TextBlock" BasedOn="{StaticResource FormLabel}">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- HELPER TEXT -->
+    <!-- ============================================ -->
+
+    <!-- Help Text -->
+    <Style x:Key="HelpText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+    </Style>
+
+    <!-- Error Text -->
+    <Style x:Key="ErrorText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+    </Style>
+
+    <!-- Success Text -->
+    <Style x:Key="SuccessText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource Success}"/>
+    </Style>
+
+</ResourceDictionary>

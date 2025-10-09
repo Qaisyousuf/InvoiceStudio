@@ -2,6 +2,52 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
 
+                <!-- ✅ COLORS MUST BE FIRST - Foundation for all other styles -->
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
+
+                <!-- 📝 Typography & Text -->
+                <ResourceDictionary Source="Resources/Styles/Typography.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/TextBlocks.xaml"/>
+
+                <!-- 🎨 Layout & Structure -->
+                <ResourceDictionary Source="Resources/Styles/Borders.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Panels.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ScrollViewer.xaml"/>
+
+                <!-- 🎴 Cards & Containers -->
+                <ResourceDictionary Source="Resources/Styles/Cards.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Headers.xaml"/>
+
+                <!-- 🔘 Interactive Components -->
+                <ResourceDictionary Source="Resources/Styles/Buttons.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/TextBoxes.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ComboBoxes.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ToggleButtons.xaml"/>
+
+                <!-- 🏷️ Visual Elements -->
+                <ResourceDictionary Source="Resources/Styles/Icons.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/StatusBadges.xaml"/>
+
+                <!-- 📊 Data Display -->
+                <ResourceDictionary Source="Resources/Styles/DataGrids.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Stats.xaml"/>
+
+                <!-- 🧭 Navigation -->
+                <ResourceDictionary Source="Resources/Styles/Navigation.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Sidebar.xaml"/>
+
+                <!-- 📋 Forms & Modals -->
+                <ResourceDictionary Source="Resources/Styles/Forms.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Modals.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ContextMenus.xaml"/>
+
+                <!-- 📱 Page Layouts -->
+                <ResourceDictionary Source="Resources/Styles/Dashboard.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

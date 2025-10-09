@@ -1,0 +1,297 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================ -->
+    <!-- BASE CARD STYLES -->
+    <!-- ============================================ -->
+
+    <Style x:Key="BaseCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="16"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- STAT CARD (Dashboard stats) -->
+    <!-- ============================================ -->
+
+    <Style x:Key="StatCard" TargetType="Border" BasedOn="{StaticResource BaseCard}">
+        <Setter Property="Padding" Value="28"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" BlurRadius="32" 
+                                Opacity="0.4" ShadowDepth="8"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                       To="-4" Duration="0:0:0.3"/>
+                        <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                      To="#3B82F6" Duration="0:0:0.3"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                       To="0" Duration="0:0:0.3"/>
+                        <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                      To="#1F2937" Duration="0:0:0.3"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- STAT CARD WITH TOP BORDER -->
+    <!-- ============================================ -->
+
+    <Style x:Key="StatCardWithTopBorder" TargetType="Grid">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Top Border for Stat Cards -->
+    <Style x:Key="StatCardTopBorder" TargetType="Rectangle">
+        <Setter Property="Height" Value="3"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Fill" Value="{StaticResource TopBorderGradient}"/>
+        <Setter Property="RadiusX" Value="16"/>
+        <Setter Property="RadiusY" Value="16"/>
+        <Setter Property="Margin" Value="0,0,0,0"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- SECTION CARD (Recent Invoices, etc.) -->
+    <!-- ============================================ -->
+
+    <Style x:Key="SectionCard" TargetType="Border" BasedOn="{StaticResource BaseCard}">
+        <Setter Property="Margin" Value="0,0,0,24"/>
+    </Style>
+
+    <!-- Section Header -->
+    <Style x:Key="SectionHeader" TargetType="Border">
+        <Setter Property="Padding" Value="28,24"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Section Content -->
+    <Style x:Key="SectionContent" TargetType="Border">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- ICON CONTAINERS -->
+    <!-- ============================================ -->
+
+    <!-- Base Icon Container -->
+    <Style x:Key="IconContainer" TargetType="Border">
+        <Setter Property="Width" Value="48"/>
+        <Setter Property="Height" Value="48"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Small Icon Container (for section headers) -->
+    <Style x:Key="SmallIconContainer" TargetType="Border">
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Tiny Icon Container (for navigation) -->
+    <Style x:Key="TinyIconContainer" TargetType="Border">
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Icon Container - Blue -->
+    <Style x:Key="IconContainerBlue" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#3B82F6" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Icon Container - Purple -->
+    <Style x:Key="IconContainerPurple" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#8B5CF6" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Icon Container - Green -->
+    <Style x:Key="IconContainerGreen" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#10B981" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Icon Container - Orange -->
+    <Style x:Key="IconContainerOrange" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#F97316" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Icon Container - Pink -->
+    <Style x:Key="IconContainerPink" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#EC4899" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Icon Container - Red -->
+    <Style x:Key="IconContainerRed" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#EF4444" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- COMPACT CARD (Smaller cards) -->
+    <!-- ============================================ -->
+
+    <Style x:Key="CompactCard" TargetType="Border" BasedOn="{StaticResource BaseCard}">
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="CornerRadius" Value="12"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- INTERACTIVE CARD (Clickable) -->
+    <!-- ============================================ -->
+
+    <Style x:Key="InteractiveCard" TargetType="Border" BasedOn="{StaticResource BaseCard}">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                       To="-2" Duration="0:0:0.2"/>
+                        <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                      To="#3B82F6" Duration="0:0:0.2"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                       To="0" Duration="0:0:0.2"/>
+                        <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                      To="#1F2937" Duration="0:0:0.2"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- NOTIFICATION CARD -->
+    <!-- ============================================ -->
+
+    <Style x:Key="NotificationCard" TargetType="Border" BasedOn="{StaticResource BaseCard}">
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Primary}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#3B82F6" Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Success Notification -->
+    <Style x:Key="SuccessNotificationCard" TargetType="Border" BasedOn="{StaticResource NotificationCard}">
+        <Setter Property="BorderBrush" Value="{StaticResource Success}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#10B981" Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Warning Notification -->
+    <Style x:Key="WarningNotificationCard" TargetType="Border" BasedOn="{StaticResource NotificationCard}">
+        <Setter Property="BorderBrush" Value="{StaticResource Warning}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#F97316" Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Error Notification -->
+    <Style x:Key="ErrorNotificationCard" TargetType="Border" BasedOn="{StaticResource NotificationCard}">
+        <Setter Property="BorderBrush" Value="{StaticResource Error}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#EF4444" Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- LAYOUT HELPERS -->
+    <!-- ============================================ -->
+
+    <!-- Stat Header Layout -->
+    <Style x:Key="StatHeader" TargetType="Grid">
+        <Setter Property="Margin" Value="0,0,0,20"/>
+    </Style>
+
+    <!-- Stat Content Layout -->
+    <Style x:Key="StatContent" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Vertical"/>
+    </Style>
+
+    <!-- Section Title Layout -->
+    <Style x:Key="SectionTitleLayout" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Card Actions Layout -->
+    <Style x:Key="CardActions" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+</ResourceDictionary>

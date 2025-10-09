@@ -1,0 +1,137 @@
+﻿<Window x:Class="InvoiceStudio.Presentation.Wpf.Views.Products.ProductDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding Title}" 
+        Height="550" 
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Form Content -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="30">
+
+                <!-- Name -->
+                <TextBlock Text="Name *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                         Padding="10" 
+                         Margin="0,0,0,15"/>
+
+                <!-- Description -->
+                <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                         Padding="10"
+                         Height="80"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Margin="0,0,0,15"/>
+
+                <!-- SKU -->
+                <TextBlock Text="SKU" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding Sku, UpdateSourceTrigger=PropertyChanged}" 
+                         Padding="10" 
+                         Margin="0,0,0,15"/>
+
+                <!-- Type -->
+                <TextBlock Text="Type" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <ComboBox SelectedIndex="{Binding SelectedTypeIndex}" 
+                          Padding="10" 
+                          Margin="0,0,0,15">
+                    <ComboBoxItem Content="Service"/>
+                    <ComboBoxItem Content="Product"/>
+                    <ComboBoxItem Content="Subscription"/>
+                </ComboBox>
+
+                <!-- Unit Price & Currency -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Unit Price *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding UnitPrice, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="10"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Currency" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding Currency, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="10"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Tax Rate & Unit -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Tax Rate (%)" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding TaxRate, UpdateSourceTrigger=PropertyChanged}" 
+                                 Padding="10"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Unit" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                        <ComboBox Text="{Binding Unit, UpdateSourceTrigger=PropertyChanged}"
+                                  IsEditable="True"
+                                  Padding="10">
+                            <ComboBoxItem Content="hours"/>
+                            <ComboBoxItem Content="days"/>
+                            <ComboBoxItem Content="pcs"/>
+                            <ComboBoxItem Content="kg"/>
+                            <ComboBoxItem Content="month"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Active -->
+                <CheckBox Content="Active" 
+                          IsChecked="{Binding IsActive}" 
+                          Margin="0,5,0,0"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Border Grid.Row="1" 
+                Background="White" 
+                BorderBrush="#E0E0E0" 
+                BorderThickness="0,1,0,0" 
+                Padding="30,15">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" 
+                        Click="CancelButton_Click"
+                        Padding="20,10" 
+                        Margin="0,0,10,0"
+                        Background="#95A5A6"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+
+                <Button Content="Save" 
+                        Command="{Binding SaveCommand}"
+                        Click="SaveButton_Click"
+                        Padding="20,10"
+                        Background="#27AE60"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

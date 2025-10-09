@@ -1,0 +1,301 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Modal Overlay (Dark Backdrop) -->
+    <Style x:Key="ModalOverlay" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="Black" Opacity="0.7"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+    </Style>
+
+    <!-- Base Modal Container -->
+    <Style x:Key="BaseModalContainer" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="MinWidth" Value="400"/>
+        <Setter Property="MaxWidth" Value="800"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" 
+                                BlurRadius="40" 
+                                Opacity="0.6" 
+                                ShadowDepth="8"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Small Modal (400px) -->
+    <Style x:Key="SmallModal" TargetType="Border" BasedOn="{StaticResource BaseModalContainer}">
+        <Setter Property="Width" Value="400"/>
+    </Style>
+
+    <!-- Medium Modal (600px) -->
+    <Style x:Key="MediumModal" TargetType="Border" BasedOn="{StaticResource BaseModalContainer}">
+        <Setter Property="Width" Value="600"/>
+    </Style>
+
+    <!-- Large Modal (800px) -->
+    <Style x:Key="LargeModal" TargetType="Border" BasedOn="{StaticResource BaseModalContainer}">
+        <Setter Property="Width" Value="800"/>
+    </Style>
+
+    <!-- Full Width Modal (90% screen) -->
+    <Style x:Key="FullWidthModal" TargetType="Border" BasedOn="{StaticResource BaseModalContainer}">
+        <Setter Property="MaxWidth" Value="1200"/>
+        <Setter Property="MinWidth" Value="800"/>
+    </Style>
+
+    <!-- Modal Header -->
+    <Style x:Key="ModalHeader" TargetType="Border">
+        <Setter Property="Padding" Value="28,24"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Modal Header with Top Gradient Border -->
+    <Style x:Key="ModalHeaderGradient" TargetType="Grid">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Modal Header Grid Layout -->
+    <Style x:Key="ModalHeaderGrid" TargetType="Grid">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+
+    <!-- Modal Title -->
+    <Style x:Key="ModalTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Modal Subtitle -->
+    <Style x:Key="ModalSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+        <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+
+    <!-- Modal Close Button -->
+    <Style x:Key="ModalCloseButton" TargetType="Button">
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Content" Value="✕"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="6">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#EF4444" Opacity="0.15"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Foreground" Value="{StaticResource Error}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Modal Content Area -->
+    <Style x:Key="ModalContent" TargetType="Border">
+        <Setter Property="Padding" Value="28,24"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <!-- Modal Content ScrollViewer -->
+    <Style x:Key="ModalContentScroll" TargetType="ScrollViewer">
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="MaxHeight" Value="500"/>
+        <Setter Property="Padding" Value="28,24"/>
+    </Style>
+
+    <!-- Modal Footer -->
+    <Style x:Key="ModalFooter" TargetType="Border">
+        <Setter Property="Padding" Value="28,20"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        <Setter Property="Background" Value="#0F1419"/>
+    </Style>
+
+    <!-- Modal Footer Actions (Right aligned buttons) -->
+    <Style x:Key="ModalFooterActions" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <!-- Modal Footer Actions (Space between) -->
+    <Style x:Key="ModalFooterActionsSpaced" TargetType="Grid">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+
+    <!-- Confirmation Dialog Icon Container -->
+    <Style x:Key="ConfirmIconContainer" TargetType="Border">
+        <Setter Property="Width" Value="56"/>
+        <Setter Property="Height" Value="56"/>
+        <Setter Property="CornerRadius" Value="28"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,0,20"/>
+    </Style>
+
+    <!-- Confirmation Dialog Icon -->
+    <Style x:Key="ConfirmIcon" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Success Icon Container -->
+    <Style x:Key="SuccessIconContainer" TargetType="Border" BasedOn="{StaticResource ConfirmIconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#10B981" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Warning Icon Container -->
+    <Style x:Key="WarningIconContainer" TargetType="Border" BasedOn="{StaticResource ConfirmIconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#F97316" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Error Icon Container -->
+    <Style x:Key="ErrorIconContainer" TargetType="Border" BasedOn="{StaticResource ConfirmIconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#EF4444" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Info Icon Container -->
+    <Style x:Key="InfoIconContainer" TargetType="Border" BasedOn="{StaticResource ConfirmIconContainer}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#3B82F6" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Dialog Message Text -->
+    <Style x:Key="DialogMessage" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,0,24"/>
+        <Setter Property="LineHeight" Value="22"/>
+    </Style>
+
+    <!-- Dialog Detail Text (smaller, secondary) -->
+    <Style x:Key="DialogDetail" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,0,24"/>
+        <Setter Property="LineHeight" Value="20"/>
+    </Style>
+
+    <!-- Loading Dialog Spinner Container -->
+    <Style x:Key="LoadingSpinner" TargetType="Border">
+        <Setter Property="Width" Value="48"/>
+        <Setter Property="Height" Value="48"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,0,20"/>
+    </Style>
+
+    <!-- Modal Action Button Spacing -->
+    <Style x:Key="ModalActionButton" TargetType="Button" BasedOn="{StaticResource DefaultButton}">
+        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="Margin" Value="0,0,12,0"/>
+    </Style>
+
+    <!-- Modal Primary Action Button -->
+    <Style x:Key="ModalPrimaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="MinWidth" Value="100"/>
+    </Style>
+
+    <!-- Modal Danger Button (for destructive actions) -->
+    <Style x:Key="ModalDangerButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Error}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#DC2626"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#B91C1C"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Form Field in Modal -->
+    <Style x:Key="ModalFormField" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0,0,0,20"/>
+    </Style>
+
+    <!-- Form Label in Modal -->
+    <Style x:Key="ModalFormLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+
+    <!-- Required Field Indicator -->
+    <Style x:Key="RequiredIndicator" TargetType="TextBlock">
+        <Setter Property="Text" Value="*"/>
+        <Setter Property="Foreground" Value="{StaticResource Error}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Margin" Value="4,0,0,0"/>
+    </Style>
+
+</ResourceDictionary>

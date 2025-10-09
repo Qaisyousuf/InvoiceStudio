@@ -213,6 +213,12 @@ Betalingsbetingelser:
         Terms = terms;
         MarkAsUpdated();
     }
+    public void UpdateDates(DateTime issueDate, DateTime dueDate)
+    {
+        IssueDate = issueDate;
+        DueDate = dueDate;
+        MarkAsUpdated();
+    }
 }
 
 public enum InvoiceStatus

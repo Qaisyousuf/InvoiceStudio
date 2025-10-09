@@ -1,0 +1,149 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base TextBox Style -->
+    <Style x:Key="BaseTextBox" TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource BackgroundTertiary}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="CaretBrush" Value="{StaticResource Primary}"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource Primary}"/>
+        <Setter Property="SelectionOpacity" Value="0.3"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                    Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderHover}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource Primary}"/>
+                            <Setter Property="Background" Value="{StaticResource BackgroundQuaternary}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Standard TextBox -->
+    <Style x:Key="StandardTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="MinHeight" Value="40"/>
+    </Style>
+
+    <!-- Large TextBox -->
+    <Style x:Key="LargeTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="MinHeight" Value="48"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Padding" Value="16,12"/>
+    </Style>
+
+    <!-- Small TextBox -->
+    <Style x:Key="SmallTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="10,6"/>
+    </Style>
+
+    <!-- Search TextBox -->
+    <Style x:Key="SearchTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Padding" Value="36,10,12,10"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <!-- MultiLine TextBox (TextArea) -->
+    <Style x:Key="TextArea" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="MinHeight" Value="120"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+
+    <!-- Numeric TextBox -->
+    <Style x:Key="NumericTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <!-- Error TextBox (validation failed) -->
+    <Style x:Key="ErrorTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="BorderBrush" Value="{StaticResource Error}"/>
+    </Style>
+
+    <!-- Success TextBox (validation passed) -->
+    <Style x:Key="SuccessTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="BorderBrush" Value="{StaticResource Success}"/>
+    </Style>
+
+    <!-- ReadOnly TextBox -->
+    <Style x:Key="ReadOnlyTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundSecondary}"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+    </Style>
+
+    <!-- Transparent TextBox (inline editing) -->
+    <Style x:Key="TransparentTextBox" TargetType="TextBox" BasedOn="{StaticResource BaseTextBox}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <!-- PasswordBox Style -->
+    <Style x:Key="StandardPasswordBox" TargetType="PasswordBox">
+        <Setter Property="Background" Value="{StaticResource BackgroundTertiary}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDefault}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="CaretBrush" Value="{StaticResource Primary}"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource Primary}"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="PasswordBox">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                    Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderHover}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource Primary}"/>
+                            <Setter Property="Background" Value="{StaticResource BackgroundQuaternary}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
