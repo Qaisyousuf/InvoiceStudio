@@ -9,4 +9,7 @@ public interface IProductRepository : IRepository<Product>
     Task<IReadOnlyList<Product>> GetActiveProductsAsync(CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Product>> GetByCurrencyAsync(string currency, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Product>> SearchByNameAsync(string searchTerm, CancellationToken cancellationToken = default);
+
+    Task<bool> TestConnectionAsync();
+    Task<int> GetCountAsync();
 }

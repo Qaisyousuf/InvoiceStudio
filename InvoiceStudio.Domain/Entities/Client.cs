@@ -126,6 +126,12 @@ public class Client : BaseEntity
         LogoPath = logoPath;
         MarkAsUpdated();
     }
+
+    public void UpdateNotes(string? notes)
+    {
+        Notes = notes;
+        MarkAsUpdated();
+    }
 }
 
 public enum ClientType

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using InvoiceStudio.Presentation.Wpf.ViewModels.Base;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
+using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -30,8 +31,8 @@ public partial class MainWindowViewModel : ViewModelBase
         _serviceProvider = serviceProvider;
         Title = "Dashboard";
 
-        // Load Invoices view by default
-        NavigateToInvoices();
+        // Start with Dashboard instead of Invoices
+        NavigateToDashboard();
     }
 
     [RelayCommand]
@@ -43,35 +44,64 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToInvoices()
+    private async void NavigateToInvoices()
     {
         Title = "Invoices";
-     
+        var view = _serviceProvider.GetRequiredService<InvoicesListView>();
+        CurrentView = view;
         _logger.Information("Navigated to Invoices");
+
+        // Load data after view is set
+        if (view.DataContext is InvoicesListViewModel vm)
+        {
+            await vm.LoadInvoicesCommand.ExecuteAsync(null);
+        }
     }
 
     [RelayCommand]
     private async void NavigateToClients()
     {
-        Title = "Clients";
-        var view = _serviceProvider.GetRequiredService<ClientsListView>();
-        CurrentView = view;
-        _logger.Information("Navigated to Clients");
-
-        // Load data after view is set
-        if (view.DataContext is ClientsListViewModel vm)
+        try
         {
-            await vm.LoadClientsCommand.ExecuteAsync(null);
+            Title = "Clients";
+            var view = _serviceProvider.GetRequiredService<ClientsListView>();
+            CurrentView = view;
+            _logger.Information("Navigated to Clients");
+
+            // Load data after view is set
+            if (view.DataContext is ClientsListViewModel vm)
+            {
+                await vm.LoadClientsCommand.ExecuteAsync(null);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error navigating to Clients");
+            CurrentView = CreatePlaceholder("Error loading Clients");
         }
     }
 
     [RelayCommand]
     private async void NavigateToProducts()
     {
-        Title = "Products";
-        var view = _serviceProvider.GetRequiredService<ProductsListView>();
-        CurrentView = view;
-        _logger.Information("Navigated to Products");
+        try
+        {
+            Title = "Products";
+            var view = _serviceProvider.GetRequiredService<ProductsListView>();
+            CurrentView = view;
+            _logger.Information("Navigated to Products");
+
+            // Load data after view is set (FIXED: This was missing!)
+            if (view.DataContext is ProductsListViewModel vm)
+            {
+                await vm.LoadProductsCommand.ExecuteAsync(null);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error navigating to Products");
+            CurrentView = CreatePlaceholder("Error loading Products");
+        }
     }
 
     [RelayCommand]
@@ -99,7 +129,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 Text = text,
                 FontSize = 24,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                VerticalAlignment = System.Windows.VerticalAlignment.Center
+                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                Foreground = System.Windows.Media.Brushes.White
             }
         };
     }

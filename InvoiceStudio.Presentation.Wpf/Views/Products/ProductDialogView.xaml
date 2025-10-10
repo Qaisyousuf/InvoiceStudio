@@ -124,13 +124,12 @@
                         Cursor="Hand"/>
 
                 <Button Content="Save" 
-                        Command="{Binding SaveCommand}"
-                        Click="SaveButton_Click"
-                        Padding="20,10"
-                        Background="#27AE60"
-                        Foreground="White"
-                        BorderThickness="0"
-                        Cursor="Hand"/>
+        Click="SaveButton_Click"
+        Padding="20,10"
+        Background="#27AE60"
+        Foreground="White"
+        BorderThickness="0"
+        Cursor="Hand"/>
             </StackPanel>
         </Border>
     </Grid>

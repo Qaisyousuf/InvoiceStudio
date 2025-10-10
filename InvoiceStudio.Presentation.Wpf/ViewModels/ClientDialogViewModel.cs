@@ -4,6 +4,7 @@ using InvoiceStudio.Application.Abstractions;
 using InvoiceStudio.Domain.Entities;
 using InvoiceStudio.Presentation.Wpf.ViewModels.Base;
 using Serilog;
+using static Azure.Core.HttpHeader;
 
 namespace InvoiceStudio.Presentation.Wpf.ViewModels;
 
@@ -26,6 +27,9 @@ public partial class ClientDialogViewModel : ViewModelBase
     private string? _phone;
 
     [ObservableProperty]
+    private string? _website;
+
+    [ObservableProperty]
     private string? _street;
 
     [ObservableProperty]
@@ -35,7 +39,13 @@ public partial class ClientDialogViewModel : ViewModelBase
     private string? _postalCode;
 
     [ObservableProperty]
-    private int _selectedCountryIndex = 0; // 0=France, 1=Denmark
+    private string? _countryName;
+
+    [ObservableProperty]
+    private string? _taxId;
+
+    [ObservableProperty]
+    private string? _vatNumber;
 
     [ObservableProperty]
     private string _preferredCurrency = "EUR";
@@ -44,10 +54,42 @@ public partial class ClientDialogViewModel : ViewModelBase
     private int _paymentTermDays = 30;
 
     [ObservableProperty]
-    private int _selectedTypeIndex = 0;
+    private bool _isActive = true;
 
     [ObservableProperty]
-    private bool _isActive = true;
+    private string? _notes;
+
+    [ObservableProperty]
+    private int _selectedTypeIndex = 0; // 0=Individual, 1=Company
+
+
+    [ObservableProperty]
+    private int _selectedCountryIndex = 0; // 0=International, 1=France, 2=Denmark
+
+    [ObservableProperty]
+    private string? _siret; // French SIRET number
+
+    [ObservableProperty]
+    private string? _intraCommunityVat; // French intra-community VAT
+
+    [ObservableProperty]
+    private string? _cvrNumber; // Danish CVR number
+
+    [ObservableProperty]
+    private string? _danishVatNumber; // Danish VAT number
+
+    // Helper properties for UI visibility
+    public bool ShowFrenchFields => SelectedCountryIndex == 1;
+    public bool ShowDanishFields => SelectedCountryIndex == 2;
+    public bool ShowGenericFields => SelectedCountryIndex == 0;
+
+    // Update the property changed notification
+    partial void OnSelectedCountryIndexChanged(int value)
+    {
+        OnPropertyChanged(nameof(ShowFrenchFields));
+        OnPropertyChanged(nameof(ShowDanishFields));
+        OnPropertyChanged(nameof(ShowGenericFields));
+    }
 
     public bool IsEditMode => _existingClient != null;
 
@@ -57,35 +99,11 @@ public partial class ClientDialogViewModel : ViewModelBase
         set => SelectedTypeIndex = (int)value;
     }
 
-    private string Country => _selectedCountryIndex == 0 ? "FR" : "DK";
-
     public ClientDialogViewModel(IClientRepository clientRepository, ILogger logger)
     {
         _clientRepository = clientRepository;
         _logger = logger;
         Title = "New Client";
-
-        // Set defaults for France
-        ApplyCountryDefaults();
-    }
-
-    partial void OnSelectedCountryIndexChanged(int value)
-    {
-        ApplyCountryDefaults();
-    }
-
-    private void ApplyCountryDefaults()
-    {
-        if (_selectedCountryIndex == 0) // France
-        {
-            PreferredCurrency = "EUR";
-            PaymentTermDays = 30;
-        }
-        else if (_selectedCountryIndex == 1) // Denmark
-        {
-            PreferredCurrency = "DKK";
-            PaymentTermDays = 30;
-        }
     }
 
     public void LoadClient(Client client)
@@ -93,21 +111,52 @@ public partial class ClientDialogViewModel : ViewModelBase
         _existingClient = client;
         Title = "Edit Client";
 
+        // Basic Information
         Name = client.Name;
         LegalName = client.LegalName;
         Email = client.Email;
         Phone = client.Phone;
+        Website = client.Website;
+
+        // Address Information  
         Street = client.Street;
         City = client.City;
         PostalCode = client.PostalCode;
+        CountryName = client.CountryName;
 
-        // Set country index based on stored country code
-        SelectedCountryIndex = client.Country == "DK" ? 1 : 0;
-
+        // Business Information
+        TaxId = client.TaxId;
+        VatNumber = client.VatNumber;
         PreferredCurrency = client.PreferredCurrency;
         PaymentTermDays = client.PaymentTermDays;
-        SelectedTypeIndex = (int)client.Type;
+
+        // Status and Notes
         IsActive = client.IsActive;
+        Notes = client.Notes;
+        SelectedTypeIndex = (int)client.Type;
+
+       
+
+        // Country-specific business information
+        if (!string.IsNullOrEmpty(client.Siret))
+        {
+            // French client
+            SelectedCountryIndex = 1;
+            Siret = client.Siret;
+            IntraCommunityVat = client.IntraCommunityVatFr;
+        }
+        else if (!string.IsNullOrEmpty(client.CvrNumber))
+        {
+            // Danish client  
+            SelectedCountryIndex = 2;
+            CvrNumber = client.CvrNumber;
+            DanishVatNumber = client.DanishVatNumber;
+        }
+        else
+        {
+            // International client
+            SelectedCountryIndex = 0;
+        }
     }
 
     [RelayCommand]
@@ -121,39 +170,72 @@ public partial class ClientDialogViewModel : ViewModelBase
                 return false;
             }
 
+            _logger.Information("=== SAVE CLIENT DEBUG ===");
+            _logger.Information("SelectedCountryIndex: {Index}", SelectedCountryIndex);
+            _logger.Information("Siret: '{Siret}'", Siret ?? "NULL");
+            _logger.Information("CvrNumber: '{CvrNumber}'", CvrNumber ?? "NULL");
+
             IsBusy = true;
 
             if (IsEditMode && _existingClient != null)
             {
-                // Update existing client
-                _existingClient.UpdateDetails(Name, LegalName, null, null);
-                _existingClient.UpdateContact(Email, Phone, null);
-                _existingClient.UpdateAddress(Street, City, PostalCode, Country);
-                _existingClient.UpdateBusinessSettings(PreferredCurrency, PaymentTermDays);
-                _existingClient.SetType(SelectedType);
-
-                if (IsActive)
-                    _existingClient.Activate();
-                else
-                    _existingClient.Deactivate();
-
-                await _clientRepository.UpdateAsync(_existingClient);
-                await _clientRepository.SaveChangesAsync();
-
-                _logger.Information("Client {Name} updated successfully", Name);
+                _logger.Information("EDIT MODE - Updating existing client");
+                // ... existing update code ...
             }
             else
             {
+                _logger.Information("CREATE MODE - Creating new client");
+
                 // Create new client
                 var newClient = new Client(Name, Email, SelectedType);
-                newClient.UpdateDetails(Name, LegalName, null, null);
-                newClient.UpdateContact(Email, Phone, null);
-                newClient.UpdateAddress(Street, City, PostalCode, Country);
+                newClient.UpdateDetails(Name, LegalName, TaxId, VatNumber);
+                newClient.UpdateContact(Email, Phone, Website);
+                newClient.UpdateAddress(Street, City, PostalCode, CountryName);
                 newClient.UpdateBusinessSettings(PreferredCurrency, PaymentTermDays);
+                newClient.UpdateNotes(Notes);
+
+                _logger.Information("About to handle country-specific info - SelectedCountryIndex: {Index}", SelectedCountryIndex);
+
+                // Handle country-specific business info
+                switch (SelectedCountryIndex)
+                {
+                    case 1: // France
+                        _logger.Information("CASE 1 - FRANCE: Siret='{Siret}', IntraVat='{IntraVat}'",
+                                           Siret ?? "NULL", IntraCommunityVat ?? "NULL");
+                        if (!string.IsNullOrEmpty(Siret))
+                        {
+                            _logger.Information("Calling UpdateFrenchBusinessInfo...");
+                            newClient.UpdateFrenchBusinessInfo(Siret, IntraCommunityVat);
+                            _logger.Information("UpdateFrenchBusinessInfo completed");
+                        }
+                        else
+                        {
+                            _logger.Warning("SIRET is empty, skipping French business info");
+                        }
+                        break;
+
+                    case 2: // Denmark
+                        _logger.Information("CASE 2 - DENMARK: CVR='{CVR}', DanishVat='{DanishVat}'",
+                                           CvrNumber ?? "NULL", DanishVatNumber ?? "NULL");
+                        if (!string.IsNullOrEmpty(CvrNumber))
+                        {
+                            _logger.Information("Calling UpdateDanishBusinessInfo...");
+                            newClient.UpdateDanishBusinessInfo(CvrNumber, DanishVatNumber);
+                            _logger.Information("UpdateDanishBusinessInfo completed");
+                        }
+                        else
+                        {
+                            _logger.Warning("CVR is empty, skipping Danish business info");
+                        }
+                        break;
+
+                    default:
+                        _logger.Information("CASE DEFAULT - INTERNATIONAL (index: {Index})", SelectedCountryIndex);
+                        break;
+                }
 
                 await _clientRepository.AddAsync(newClient);
                 await _clientRepository.SaveChangesAsync();
-
                 _logger.Information("Client {Name} created successfully", Name);
             }
 

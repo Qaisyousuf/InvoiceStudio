@@ -3,6 +3,7 @@ using InvoiceStudio.Infrastructure.Persistence;
 using InvoiceStudio.Infrastructure.Persistence.Repositories;
 using InvoiceStudio.Presentation.Wpf.ViewModels;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
+using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -63,32 +64,50 @@ public partial class App : System.Windows.Application
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
-        // MainWindow
 
-    
-        services.AddTransient<ClientsListViewModel>();
+        // ViewModels and Views
+      
         services.AddTransient<ClientsListView>();
         services.AddTransient<ProductsListViewModel>();
         services.AddTransient<ProductsListView>();
+        services.AddTransient<ProductDialogViewModel>(); 
         services.AddTransient<MainWindowViewModel>();
+     
+        services.AddTransient<ClientDialogViewModel>();
+        services.AddTransient<ClientsListViewModel>();
+
+
+        services.AddTransient<InvoicesListView>();
+        services.AddTransient<InvoicesListViewModel>();         
+        services.AddTransient<InvoiceDialogViewModel>();
+        services.AddTransient<InvoiceDetailViewModel>();
+
         services.AddTransient<MainWindow>();
     }
 
     protected override async void OnStartup(StartupEventArgs e)
     {
-        await _host.StartAsync();
-
-        // Seed the database
-        using (var scope = _host.Services.CreateScope())
+        try
         {
-            var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-            await seeder.SeedAsync();
+            await _host.StartAsync();
+
+            // Ensure database exists
+            using (var scope = _host.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<InvoiceDbContext>();
+                await context.Database.EnsureCreatedAsync();
+            }
+
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+
+            base.OnStartup(e);
         }
-
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        mainWindow.Show();
-
-        base.OnStartup(e);
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Startup Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown();
+        }
     }
 
     protected override async void OnExit(ExitEventArgs e)

@@ -58,4 +58,30 @@ public class ProductRepository : Repository<Product>, IProductRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<bool> TestConnectionAsync()
+    {
+        try
+        {
+            // Test if we can connect and count records
+            var count = await _context.Database.CanConnectAsync();
+            return count;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<int> GetCountAsync()
+    {
+        try
+        {
+            return await _dbSet.CountAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Database query failed: {ex.Message}", ex);
+        }
+    }
 }

@@ -10,7 +10,6 @@ public partial class ProductsListView : UserControl
         InitializeComponent();
         DataContext = viewModel;
 
-        // Auto-load when view loads
-        Loaded += (s, e) => _ = viewModel.LoadProductsCommand.ExecuteAsync(null);
+       
     }
 }
