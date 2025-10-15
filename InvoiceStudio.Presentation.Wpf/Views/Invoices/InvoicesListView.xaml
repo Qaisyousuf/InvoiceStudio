@@ -86,8 +86,8 @@
         <Border Grid.Row="0" Padding="30,25">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#F59E0B" Offset="0"/>
-                    <GradientStop Color="#D97706" Offset="1"/>
+                    <GradientStop Color="#5855EB" Offset="0"/>
+                    <GradientStop Color="#4F46E5" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
             <Grid>
@@ -556,11 +556,47 @@
 
                         <!-- Actions Column -->
                         <!-- Actions Column with Status-Based Buttons -->
-                        <DataGridTemplateColumn Header="⚡ Actions" Width="220">
+                        <DataGridTemplateColumn Header="⚡ Actions" Width="280">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
+                                        <!-- EDIT BUTTON (Draft only) - MOVE TO FIRST POSITION -->
+                                        <Button Background="#8B5CF6"
+        Foreground="White"
+        BorderThickness="0"
+        Padding="12,6"
+        Margin="0,0,5,0"
+        Cursor="Hand"
+        Command="{Binding DataContext.EditInvoiceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        CommandParameter="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Draft">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                    CornerRadius="4" 
+                    Padding="{TemplateBinding Padding}">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                            <TextBlock Text="✏️" FontSize="10" Margin="0,0,3,0"/>
+                                                            <TextBlock Text="Edit" FontWeight="Bold" FontSize="9"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#7C3AED"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
                                         <!-- APPROVE BUTTON (Draft only) -->
                                         <Button Background="#10B981"
                         Foreground="White"
@@ -745,7 +781,8 @@
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
-
+                                        <!-- EDIT BUTTON (Draft only) -->
+                                        
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

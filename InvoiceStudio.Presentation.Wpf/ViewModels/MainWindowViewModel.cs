@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using InvoiceStudio.Presentation.Wpf.ViewModels.Base;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
+using InvoiceStudio.Presentation.Wpf.Views.Company;
 using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.Extensions.DependencyInjection;
@@ -111,7 +112,28 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentView = CreatePlaceholder("Reports - Coming Soon");
         _logger.Information("Navigated to Reports");
     }
+    [RelayCommand]
+    private async void NavigateToCompany()
+    {
+        try
+        {
+            Title = "Company";
+            var view = _serviceProvider.GetRequiredService<CompanySettingsView>();
+            CurrentView = view;
+            _logger.Information("Navigated to Company");
 
+            // Load data after view is set
+            if (view.DataContext is CompanySettingsViewModel vm)
+            {
+                await vm.LoadCompanyCommand.ExecuteAsync(null);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error navigating to Company");
+            CurrentView = CreatePlaceholder("Error loading Company");
+        }
+    }
     [RelayCommand]
     private void NavigateToSettings()
     {

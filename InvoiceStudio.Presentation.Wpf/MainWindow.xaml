@@ -88,6 +88,9 @@
                         <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="📈 Reports"
                                 Command="{Binding NavigateToReportsCommand}"/>
+                        <Button Style="{StaticResource NavigationButtonStyle}"
+                                Content="🏢 Company"
+                                Command="{Binding NavigateToCompanyCommand}"/>
 
                         <Button Style="{StaticResource NavigationButtonStyle}"
                                 Content="⚙️ Settings"

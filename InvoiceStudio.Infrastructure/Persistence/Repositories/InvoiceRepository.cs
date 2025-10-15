@@ -76,4 +76,29 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
+
+    public async Task DeleteInvoiceLinesAsync(Guid invoiceId)
+    {
+        var lines = await _dbSet
+            .Where(i => i.Id == invoiceId)
+            .SelectMany(i => i.Lines)
+            .ToListAsync();
+
+        foreach (var line in lines)
+        {
+            _context.InvoiceLines.Remove(line);
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> UpdateInvoiceBasicAsync(Guid invoiceId, string? notes, string? terms)
+    {
+        var invoice = await _dbSet.FindAsync(invoiceId);
+        if (invoice == null) return false;
+
+        invoice.UpdateNotes(notes, terms);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

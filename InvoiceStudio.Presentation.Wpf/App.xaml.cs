@@ -1,8 +1,10 @@
 ﻿using InvoiceStudio.Application.Abstractions;
 using InvoiceStudio.Infrastructure.Persistence;
 using InvoiceStudio.Infrastructure.Persistence.Repositories;
+using InvoiceStudio.Presentation.Wpf.Services;
 using InvoiceStudio.Presentation.Wpf.ViewModels;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
+using InvoiceStudio.Presentation.Wpf.Views.Company;
 using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +57,7 @@ public partial class App : System.Windows.Application
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             options.UseSqlServer(connectionString);
         });
-        services.AddScoped<DatabaseSeeder>();
+      
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
@@ -64,9 +66,12 @@ public partial class App : System.Windows.Application
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+        services.AddScoped<IBankStatementOcrService, BankStatementOcrService>();
+        // Add this line where you register other services
+        services.AddScoped<IBankingInfoParser, BankingInfoParser>();
 
         // ViewModels and Views
-      
+
         services.AddTransient<ClientsListView>();
         services.AddTransient<ProductsListViewModel>();
         services.AddTransient<ProductsListView>();
@@ -81,6 +86,9 @@ public partial class App : System.Windows.Application
         services.AddTransient<InvoicesListViewModel>();         
         services.AddTransient<InvoiceDialogViewModel>();
         services.AddTransient<InvoiceDetailViewModel>();
+        services.AddTransient<EditInvoiceViewModel>();
+        services.AddTransient<CompanySettingsViewModel>();
+        services.AddTransient<CompanySettingsView>();
 
         services.AddTransient<MainWindow>();
     }

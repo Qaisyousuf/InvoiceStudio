@@ -8,4 +8,5 @@ public interface ICompanyRepository : IRepository<Company>
     Task<Company?> GetBySiretAsync(string siret, CancellationToken cancellationToken = default);
     Task<Company?> GetByCvrNumberAsync(string cvrNumber, CancellationToken cancellationToken = default);
     Task<Company?> GetFirstAsync(CancellationToken cancellationToken = default);
+    Task<Company?> GetFirstForUpdateAsync(CancellationToken cancellationToken = default); // ← ADD THIS LINE
 }

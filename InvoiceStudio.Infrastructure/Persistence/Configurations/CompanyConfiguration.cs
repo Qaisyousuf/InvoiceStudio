@@ -9,7 +9,6 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     public void Configure(EntityTypeBuilder<Company> builder)
     {
         builder.ToTable("Companies");
-
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Name)
@@ -90,12 +89,41 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.Property(c => c.CountryName)
             .HasMaxLength(100);
 
-        // Banking
+        // Universal Banking
+        builder.Property(c => c.BankName)
+            .HasMaxLength(200);
+
         builder.Property(c => c.Iban)
             .HasMaxLength(50);
 
         builder.Property(c => c.Swift)
             .HasMaxLength(20);
+
+        // French Banking (RIB)
+        builder.Property(c => c.FrenchBankCode)
+            .HasMaxLength(5)
+            .HasComment("Code Banque - 5 digits");
+
+        builder.Property(c => c.FrenchBranchCode)
+            .HasMaxLength(5)
+            .HasComment("Code Guichet - 5 digits");
+
+        builder.Property(c => c.FrenchAccountNumber)
+            .HasMaxLength(11)
+            .HasComment("Numéro de Compte - 11 alphanumeric");
+
+        builder.Property(c => c.FrenchRibKey)
+            .HasMaxLength(2)
+            .HasComment("Clé RIB - 2 digits");
+
+        // Danish Banking
+        builder.Property(c => c.DanishRegistrationNumber)
+            .HasMaxLength(4)
+            .HasComment("Reg.nr - 4 digit bank identifier");
+
+        builder.Property(c => c.DanishAccountNumber)
+            .HasMaxLength(20)
+            .HasComment("Konto nr - Danish account number");
 
         // Insurance
         builder.Property(c => c.InsuranceCompany)
@@ -103,6 +131,13 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
 
         builder.Property(c => c.InsurancePolicyNumber)
             .HasMaxLength(100);
+
+        // Branding
+        builder.Property(c => c.LogoPath)
+            .HasMaxLength(500);
+
+        builder.Property(c => c.PrimaryColor)
+            .HasMaxLength(7);
 
         // Currency & Tax
         builder.Property(c => c.DefaultCurrency)
@@ -124,5 +159,10 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.HasIndex(c => c.Siret);
         builder.HasIndex(c => c.CvrNumber);
         builder.HasIndex(c => c.Country);
+
+        // Additional indexes for banking
+        builder.HasIndex(c => c.Iban);
+        builder.HasIndex(c => c.FrenchBankCode);
+        builder.HasIndex(c => c.DanishRegistrationNumber);
     }
 }

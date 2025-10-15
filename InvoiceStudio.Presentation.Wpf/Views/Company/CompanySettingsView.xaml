@@ -1,0 +1,877 @@
+﻿<UserControl x:Class="InvoiceStudio.Presentation.Wpf.Views.Company.CompanySettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:converters="clr-namespace:InvoiceStudio.Presentation.Wpf.Converters"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <!-- Converters -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+    
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+
+        <!-- Modern Color Palette -->
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#2563EB"/>
+        <SolidColorBrush x:Key="PrimaryBlueHover" Color="#1D4ED8"/>
+        <SolidColorBrush x:Key="SecondaryGray" Color="#6B7280"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F3F4F6"/>
+        <SolidColorBrush x:Key="BorderGray" Color="#E5E7EB"/>
+        <SolidColorBrush x:Key="TextDark" Color="#111827"/>
+        <SolidColorBrush x:Key="TextMedium" Color="#374151"/>
+        <SolidColorBrush x:Key="Success" Color="#059669"/>
+        <SolidColorBrush x:Key="Warning" Color="#D97706"/>
+
+        <!-- Modern Typography -->
+        <Style x:Key="PageTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style x:Key="PageSubtitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryGray}"/>
+            <Setter Property="Margin" Value="0,0,0,32"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <Style x:Key="FormLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMedium}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <!-- Modern Form Controls -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                        Margin="{TemplateBinding Padding}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Modern Cards -->
+        <Style x:Key="ModernCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Margin" Value="0,0,0,24"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Buttons -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource PrimaryBlueHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1E40AF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMedium}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource LightGray}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Status Indicators -->
+        <Style x:Key="StatusCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,24"/>
+        </Style>
+
+        <!-- Country Flag Icons -->
+        <Style x:Key="CountryFlag" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource LightGray}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderGray}" BorderThickness="0,0,0,1">
+            <Grid Margin="40,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Company Settings" Style="{StaticResource PageTitle}"/>
+                    <TextBlock Text="Manage your business information, legal details, and preferences" 
+                               Style="{StaticResource PageSubtitle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                    <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0"/>
+                    <Button Content="Save Changes" Style="{StaticResource PrimaryButton}"
+                            Command="{Binding SaveCompanyCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="40,32">
+            <StackPanel MaxWidth="1000">
+
+                <!-- Status Indicators -->
+                <Border Style="{StaticResource StatusCard}" Background="#EFF6FF" BorderBrush="#DBEAFE" BorderThickness="1"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⏳" FontSize="18" Margin="0,0,12,0"/>
+                        <TextBlock Text="Loading company settings..." FontWeight="Medium" 
+                                   Foreground="#1E40AF" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource StatusCard}" Background="#FFFBEB" BorderBrush="#FCD34D" BorderThickness="1"
+                        Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⚠️" FontSize="18" Margin="0,0,12,0"/>
+                        <StackPanel>
+                            <TextBlock Text="You have unsaved changes" FontWeight="SemiBold" Foreground="#92400E"/>
+                            <TextBlock Text="Don't forget to save your changes before leaving this page" 
+                                       FontSize="13" Foreground="#92400E" Opacity="0.8"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Company Basics -->
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#EFF6FF" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="🏢" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Company Information" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Basic details about your business" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Company Name*" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="Legal Name" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding LegalName, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="Email Address" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Phone Number" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="Website" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Website, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="Legal Form" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding LegalForm, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Address -->
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#F0FDF4" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="📍" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Business Address" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Your official business location" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Street Address" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Street, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="City" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding City, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Postal Code" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding PostalCode, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Country" Style="{StaticResource FormLabel}"/>
+                        <TextBox Text="{Binding CountryName, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Country Selection & Preferences -->
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#FEF3C7" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="⚙️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Business Preferences" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Country, currency, and tax settings" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Business Country*" Style="{StaticResource FormLabel}"/>
+                                <ComboBox SelectedIndex="{Binding SelectedCountryIndex, UpdateSourceTrigger=PropertyChanged}" 
+                                          Style="{StaticResource ModernComboBox}">
+                                    <ComboBoxItem>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🇫🇷" Style="{StaticResource CountryFlag}"/>
+                                            <TextBlock Text="France" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🇩🇰" Style="{StaticResource CountryFlag}"/>
+                                            <TextBlock Text="Denmark" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Default Currency" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding DefaultCurrency, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Default Tax Rate (%)" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding DefaultTaxRate, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Banking Information -->
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#F0F9FF" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="🏦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Banking Information" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Bank details for payments and transfers" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Bank Statement Scanner Section -->
+                        <Border Background="#F8FAFC" BorderBrush="{StaticResource BorderGray}" BorderThickness="1" 
+                CornerRadius="8" Padding="20" Margin="0,0,0,24">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <TextBlock Text="📄" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Bank Statement Scanner" FontWeight="SemiBold" FontSize="16" 
+                               Foreground="{StaticResource TextDark}" VerticalAlignment="Center"/>
+                                    <Border Background="{StaticResource PrimaryBlue}" CornerRadius="12" Padding="8,4" Margin="12,0,0,0">
+                                        <TextBlock Text="NEW" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                    </Border>
+                                </StackPanel>
+
+                                <TextBlock Text="Upload a bank statement (PDF/Image) to automatically extract banking information" 
+                           FontSize="13" Foreground="{StaticResource SecondaryGray}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+
+                                <!-- Upload Area -->
+                                <Border Background="White" BorderBrush="{StaticResource BorderGray}" BorderThickness="2" 
+                        CornerRadius="8" Height="120" Margin="0,0,0,16">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsProcessingStatement}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+
+                                    <Grid>
+                                        <!-- Default Upload State -->
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsProcessingStatement}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding HasStatementFile}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            <TextBlock Text="📤" FontSize="32" HorizontalAlignment="Center" Opacity="0.6"/>
+                                            <TextBlock Text="Drop bank statement here or click to browse" FontSize="12" 
+                                       HorizontalAlignment="Center" Foreground="{StaticResource SecondaryGray}" Margin="0,4,0,0"/>
+                                            <TextBlock Text="Supports PDF, PNG, JPG" FontSize="11" 
+                                       HorizontalAlignment="Center" Foreground="{StaticResource SecondaryGray}" Opacity="0.7"/>
+                                        </StackPanel>
+
+                                        <!-- Processing State -->
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Visibility="{Binding IsProcessingStatement, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock Text="⚡" FontSize="32" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Scanning document..." FontSize="12" FontWeight="Medium"
+                                       HorizontalAlignment="Center" Foreground="{StaticResource PrimaryBlue}" Margin="0,4,0,0"/>
+                                            <TextBlock Text="{Binding ProcessingStatus}" FontSize="11" 
+                                       HorizontalAlignment="Center" Foreground="{StaticResource SecondaryGray}"/>
+                                        </StackPanel>
+
+                                        <!-- File Selected State -->
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding HasStatementFile}" Value="True"/>
+                                                                <Condition Binding="{Binding IsProcessingStatement}" Value="False"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            <TextBlock Text="✅" FontSize="24" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding StatementFileName}" FontSize="12" FontWeight="Medium"
+                                       HorizontalAlignment="Center" Foreground="{StaticResource TextDark}" Margin="0,4,0,0"/>
+                                            <TextBlock Text="Ready to scan" FontSize="11" 
+                                       HorizontalAlignment="Center" Foreground="{StaticResource Success}"/>
+                                        </StackPanel>
+
+                                        <!-- Click overlay for file selection -->
+                                        <Button Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                Command="{Binding SelectStatementFileCommand}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsProcessingStatement}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Action Buttons -->
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="📁 Select File" Style="{StaticResource PrimaryButton}" 
+                            Command="{Binding SelectStatementFileCommand}" Margin="0,0,12,0"
+                            IsEnabled="{Binding IsProcessingStatement, Converter={StaticResource InverseBooleanConverter}}"/>
+                                    <Button Content="🔍 Scan Statement" Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ScanStatementCommand}" Margin="0,0,12,0"
+                            IsEnabled="{Binding CanScanStatement}"/>
+                                    <Button Content="🗑️ Clear" Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ClearStatementCommand}"
+                            Visibility="{Binding HasStatementFile, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Universal Banking Fields (Always Visible) -->
+                        <Grid Margin="0,0,0,24">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Bank Name" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding BankName, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="IBAN" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Iban, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="SWIFT/BIC Code" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Swift, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- French RIB Details -->
+                        <Border Style="{StaticResource ModernCard}" Margin="0" Padding="20" 
+                Background="#FFFBEB" BorderBrush="#FCD34D" BorderThickness="1"
+                Visibility="{Binding ShowFrenchBanking, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <TextBlock Text="🇫🇷" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="RIB (Relevé d'Identité Bancaire)" FontWeight="SemiBold" FontSize="16" 
+                               Foreground="{StaticResource TextDark}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Code Banque" Style="{StaticResource FormLabel}"/>
+                                        <TextBox Text="{Binding FrenchBankCode, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}" MaxLength="5"
+                                 ToolTip="5 digits - Bank code"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Code Guichet" Style="{StaticResource FormLabel}"/>
+                                        <TextBox Text="{Binding FrenchBranchCode, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}" MaxLength="5"
+                                 ToolTip="5 digits - Branch code"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Text="Numéro de Compte" Style="{StaticResource FormLabel}"/>
+                                        <TextBox Text="{Binding FrenchAccountNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}" MaxLength="11"
+                                 ToolTip="11 alphanumeric characters"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="6">
+                                        <TextBlock Text="Clé RIB" Style="{StaticResource FormLabel}"/>
+                                        <TextBox Text="{Binding FrenchRibKey, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}" MaxLength="2"
+                                 ToolTip="2 digits - Control key"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Danish Banking Details -->
+                        <Border Style="{StaticResource ModernCard}" Margin="0" Padding="20"
+                Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1"
+                Visibility="{Binding ShowDanishBanking, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <TextBlock Text="🇩🇰" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Danish Banking Details" FontWeight="SemiBold" FontSize="16" 
+                               Foreground="{StaticResource TextDark}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Reg.nr (Registration Number)" Style="{StaticResource FormLabel}"/>
+                                        <TextBox Text="{Binding DanishRegistrationNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}" MaxLength="4"
+                                 ToolTip="4 digits - Bank registration number"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Konto nr (Account Number)" Style="{StaticResource FormLabel}"/>
+                                        <TextBox Text="{Binding DanishAccountNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}"
+                                 ToolTip="Danish account number"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Branding & Invoice Configuration -->
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#F3E8FF" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="🎨" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Branding and Configuration" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Logo, colors, and invoice settings" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Logo Upload Section -->
+                        <Grid Margin="0,0,0,32">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Logo Preview Area -->
+                            <Border Grid.Column="0" Background="#F9FAFB" BorderBrush="{StaticResource BorderGray}" 
+                                    BorderThickness="2" CornerRadius="12" Height="140">
+                                <Grid>
+                                    <!-- No Logo State -->
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasLogo}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <TextBlock Text="📷" FontSize="32" HorizontalAlignment="Center" Opacity="0.5"/>
+                                        <TextBlock Text="No Logo" FontSize="12" HorizontalAlignment="Center" 
+                                                   Foreground="{StaticResource SecondaryGray}" Margin="0,4,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Logo Preview -->
+                                    <Image Source="{Binding LogoPreviewPath}" Stretch="Uniform" Margin="8"
+                                           Visibility="{Binding HasLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Logo Controls -->
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="Company Logo" Style="{StaticResource FormLabel}" Margin="0,0,0,12"/>
+                                <TextBlock Text="Upload your company logo for invoices and documents. Recommended size: 200x80px" 
+                                           FontSize="13" Foreground="{StaticResource SecondaryGray}" 
+                                           Margin="0,0,0,16" TextWrapping="Wrap"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="📁 Upload Logo" Style="{StaticResource PrimaryButton}" 
+                                            Command="{Binding UploadLogoCommand}" Margin="0,0,12,0"/>
+                                    <Button Content="🗑️ Remove" Style="{StaticResource SecondaryButton}"
+                                            Command="{Binding RemoveLogoCommand}"
+                                            Visibility="{Binding HasLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Configuration Settings -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Invoice Prefix" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding InvoicePrefix, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Quote Prefix" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding QuotePrefix, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Primary Color" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding PrimaryColor, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         ToolTip="Enter hex color code (e.g., #2563EB)"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Insurance Information -->
+                <Border Style="{StaticResource ModernCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#FEF2F2" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="🛡️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Insurance Information" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Professional liability and insurance details" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Insurance Company" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding InsuranceCompany, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Policy Number" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding InsurancePolicyNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- French Legal Details -->
+                <Border Style="{StaticResource ModernCard}" 
+                        Visibility="{Binding ShowFrenchFields, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#DBEAFE" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="🇫🇷" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="French Legal Registration" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="SIRET, SIREN, APE code and VAT details" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="SIRET Number (14 digits)" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Siret, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="SIREN Number (9 digits)" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding Siren, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="RCS Number" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding RcsNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="APE/NAF Code" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding ApeCode, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+
+                                <TextBlock Text="VAT Exemption Mention" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding FrenchVatExemptionMention, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}" Height="80" TextWrapping="Wrap"
+                                         VerticalContentAlignment="Top" AcceptsReturn="True"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Danish Legal Details -->
+                <Border Style="{StaticResource ModernCard}" 
+                        Visibility="{Binding ShowDanishFields, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                            <Border Background="#FEF2F2" CornerRadius="10" Width="40" Height="40" Margin="0,0,16,0">
+                                <TextBlock Text="🇩🇰" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Danish Legal Registration" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="CVR number, VAT details and business registration" Foreground="{StaticResource SecondaryGray}" FontSize="14"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="CVR Number (8 digits)" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding CvrNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="SE Number" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding SeNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Danish VAT Number" Style="{StaticResource FormLabel}"/>
+                                <TextBox Text="{Binding DanishVatNumber, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Bottom Spacing -->
+                <Border Height="40"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

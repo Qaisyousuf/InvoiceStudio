@@ -37,4 +37,10 @@ public class CompanyRepository : Repository<Company>, ICompanyRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<Company?> GetFirstForUpdateAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbSet
+            .FirstOrDefaultAsync(cancellationToken); // No AsNoTracking = tracked entity
+    }
 }

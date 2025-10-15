@@ -43,10 +43,20 @@ public class Company : BaseEntity
     public string? Phone { get; private set; }
     public string? Website { get; private set; }
 
-    // Banking
+    // Universal Banking Information (EU requirements)
     public string? BankName { get; private set; }
     public string? Iban { get; private set; }
     public string? Swift { get; private set; }
+
+    // French Banking Details (RIB - legally required)
+    public string? FrenchBankCode { get; private set; }      // Code Banque (5 digits)
+    public string? FrenchBranchCode { get; private set; }    // Code Guichet (5 digits)
+    public string? FrenchAccountNumber { get; private set; } // Numéro de Compte (11 alphanumeric)
+    public string? FrenchRibKey { get; private set; }        // Clé RIB (2 digits)
+
+    // Danish Banking Details (confirmed from Danske Bank statement)
+    public string? DanishRegistrationNumber { get; private set; } // Reg.nr (bank identifier)
+    public string? DanishAccountNumber { get; private set; }      // Konto nr (account number)
 
     // Insurance
     public string? InsuranceCompany { get; private set; }
@@ -86,7 +96,7 @@ public class Company : BaseEntity
     }
 
     // French Registration
-    public void UpdateFrenchRegistration(string siret, string? apeCode, bool isVatExempt)
+    public void UpdateFrenchRegistration(string siret, string? apeCode, string? rcsNumber, bool isVatExempt)
     {
         if (Country != "FR")
             throw new InvalidOperationException("This company is not in France");
@@ -94,6 +104,7 @@ public class Company : BaseEntity
         Siret = siret;
         Siren = siret.Length >= 9 ? siret.Substring(0, 9) : string.Empty;
         ApeCode = apeCode;
+        RcsNumber = rcsNumber;  // ADD THIS LINE
         IsVatExempt = isVatExempt;
         BusinessRegistrationNumber = siret;
 
@@ -104,7 +115,6 @@ public class Company : BaseEntity
 
         MarkAsUpdated();
     }
-
     // Danish Registration
     public void UpdateDanishRegistration(string cvrNumber, string? seNumber, bool isVatExempt)
     {
@@ -150,11 +160,44 @@ public class Company : BaseEntity
         MarkAsUpdated();
     }
 
+    // Universal Banking Update
     public void UpdateBanking(string? bankName, string? iban, string? swift)
     {
         BankName = bankName;
         Iban = iban;
         Swift = swift;
+        MarkAsUpdated();
+    }
+
+    // French Banking Update (RIB)
+    public void UpdateFrenchBanking(string? bankName, string? iban, string? swift,
+        string? bankCode, string? branchCode, string? accountNumber, string? ribKey)
+    {
+        if (Country != "FR")
+            throw new InvalidOperationException("This company is not in France");
+
+        BankName = bankName;
+        Iban = iban;
+        Swift = swift;
+        FrenchBankCode = bankCode;
+        FrenchBranchCode = branchCode;
+        FrenchAccountNumber = accountNumber;
+        FrenchRibKey = ribKey;
+        MarkAsUpdated();
+    }
+
+    // Danish Banking Update
+    public void UpdateDanishBanking(string? bankName, string? iban, string? swift,
+        string? registrationNumber, string? accountNumber)
+    {
+        if (Country != "DK")
+            throw new InvalidOperationException("This company is not in Denmark");
+
+        BankName = bankName;
+        Iban = iban;
+        Swift = swift;
+        DanishRegistrationNumber = registrationNumber;
+        DanishAccountNumber = accountNumber;
         MarkAsUpdated();
     }
 
@@ -181,6 +224,14 @@ public class Company : BaseEntity
             DefaultTaxRate = 20.0m;
         }
 
+        MarkAsUpdated();
+    }
+
+    // Add this method to your Company entity
+    public void UpdateBranding(string? logoPath, string? primaryColor)
+    {
+        LogoPath = logoPath;
+        PrimaryColor = primaryColor;
         MarkAsUpdated();
     }
 }

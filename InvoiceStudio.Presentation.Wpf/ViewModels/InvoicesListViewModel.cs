@@ -69,6 +69,8 @@ public partial class InvoicesListViewModel : ViewModelBase
         }
     }
 
+  
+
     [RelayCommand]
     private async Task LoadInvoicesAsync()
     {
@@ -287,6 +289,38 @@ public partial class InvoicesListViewModel : ViewModelBase
         catch (Exception ex)
         {
             _logger.Error(ex, "Error opening invoice detail view for {InvoiceNumber}", invoice?.InvoiceNumber);
+        }
+    }
+
+    [RelayCommand]
+    private async Task EditInvoiceAsync(Invoice invoice)
+    {
+        try
+        {
+            if (invoice?.Status != InvoiceStatus.Draft)
+            {
+                _logger.Warning("Only draft invoices can be edited");
+                return;
+            }
+
+            _logger.Information("Opening edit dialog for invoice {InvoiceNumber}", invoice.InvoiceNumber);
+
+            var viewModel = _serviceProvider.GetRequiredService<EditInvoiceViewModel>();
+            await viewModel.LoadInvoiceAsync(invoice.Id);
+
+            var dialog = new EditInvoiceView(viewModel);
+            dialog.Owner = System.Windows.Application.Current.MainWindow;
+
+            bool? result = dialog.ShowDialog();
+            if (result == true)
+            {
+                _logger.Information("Invoice edited successfully, refreshing list");
+                await LoadInvoicesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error opening edit dialog");
         }
     }
 }

@@ -26,6 +26,8 @@ public partial class InvoiceLineViewModel : ObservableObject
     [ObservableProperty]
     private decimal _taxRate = 20.0m;
 
+   
+
     public decimal LineTotal => Quantity * UnitPrice;
     public decimal TaxAmount => LineTotal * (TaxRate / 100);
     public decimal LineTotalWithTax => LineTotal + TaxAmount;
@@ -179,8 +181,8 @@ public partial class InvoiceDialogViewModel : ViewModelBase
         OnPropertyChanged(nameof(TaxAmount));
         OnPropertyChanged(nameof(TotalAmount));
     }
-
     [RelayCommand]
+
     public async Task<bool> SaveAsync()
     {
         try
@@ -190,13 +192,11 @@ public partial class InvoiceDialogViewModel : ViewModelBase
                 _logger.Warning("Client selection is required");
                 return false;
             }
-
             if (string.IsNullOrWhiteSpace(InvoiceNumber))
             {
                 _logger.Warning("Invoice number is required");
                 return false;
             }
-
             if (!InvoiceLines.Any())
             {
                 _logger.Warning("At least one invoice line is required");
@@ -256,4 +256,13 @@ public partial class InvoiceDialogViewModel : ViewModelBase
         var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
         InvoiceNumber = $"INV-{timestamp}";
     }
+
+    // Add these new properties to your existing class
+    private Invoice? _existingInvoice;
+
+    [ObservableProperty]
+    private bool _isEditMode;
+
+    // Add this new method to load existing invoice data
+  
 }
