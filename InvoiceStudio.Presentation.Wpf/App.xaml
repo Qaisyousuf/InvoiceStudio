@@ -20,7 +20,7 @@
                 <!-- 🎴 Cards & Containers -->
                 <ResourceDictionary Source="Resources/Styles/Cards.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/Headers.xaml"/>
-
+               
                 <!-- 🔘 Interactive Components -->
                 <ResourceDictionary Source="Resources/Styles/Buttons.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/TextBoxes.xaml"/>
@@ -49,5 +49,7 @@
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+        
+        
     </Application.Resources>
 </Application>

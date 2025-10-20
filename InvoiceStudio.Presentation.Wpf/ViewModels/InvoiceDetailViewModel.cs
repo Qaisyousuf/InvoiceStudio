@@ -7,7 +7,6 @@ using Microsoft.VisualBasic;
 using Serilog;
 using System.Collections.ObjectModel;
 using static Azure.Core.HttpHeader;
-
 namespace InvoiceStudio.Presentation.Wpf.ViewModels;
 
 public partial class InvoiceDetailViewModel : ViewModelBase

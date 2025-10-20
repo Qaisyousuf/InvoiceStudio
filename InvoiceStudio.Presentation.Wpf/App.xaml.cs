@@ -19,6 +19,7 @@ namespace InvoiceStudio.Presentation.Wpf;
 public partial class App : System.Windows.Application
 {
     private readonly IHost _host;
+    public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
     public App()
     {
@@ -33,16 +34,18 @@ public partial class App : System.Windows.Application
                 config.SetBasePath(AppContext.BaseDirectory)
                       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             })
-        .UseSerilog((context, loggerConfig) =>
-        {
-            loggerConfig
-                .MinimumLevel.Information()
-                .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .WriteTo.File("logs/invoicestudio-.txt",
-                    rollingInterval: RollingInterval.Day);
-        })
+            .UseSerilog((context, loggerConfig) =>
+            {
+                loggerConfig
+                    .MinimumLevel.Information()
+                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                    .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console()
+                    .WriteTo.File("logs/invoicestudio-.txt",
+                        rollingInterval: RollingInterval.Day,
+                        retainedFileCountLimit: 7);
+            })
             .ConfigureServices((context, services) =>
             {
                 ConfigureServices(context.Configuration, services);
@@ -56,8 +59,11 @@ public partial class App : System.Windows.Application
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             options.UseSqlServer(connectionString);
+            options.EnableSensitiveDataLogging(false);
+            options.EnableServiceProviderCaching(true);
         });
-      
+
+        // Repositories
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
@@ -66,64 +72,91 @@ public partial class App : System.Windows.Application
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+
+        // Services
         services.AddScoped<IBankStatementOcrService, BankStatementOcrService>();
-        // Add this line where you register other services
         services.AddScoped<IBankingInfoParser, BankingInfoParser>();
 
-        // ViewModels and Views
-
-        services.AddTransient<ClientsListView>();
-        services.AddTransient<ProductsListViewModel>();
-        services.AddTransient<ProductsListView>();
-        services.AddTransient<ProductDialogViewModel>(); 
+        // ViewModels - Register as Transient for proper dialog creation
         services.AddTransient<MainWindowViewModel>();
-     
         services.AddTransient<ClientDialogViewModel>();
         services.AddTransient<ClientsListViewModel>();
-
-
-        services.AddTransient<InvoicesListView>();
-        services.AddTransient<InvoicesListViewModel>();         
+        services.AddTransient<ProductDialogViewModel>();
+        services.AddTransient<ProductsListViewModel>();
+        services.AddTransient<InvoicesListViewModel>();
         services.AddTransient<InvoiceDialogViewModel>();
         services.AddTransient<InvoiceDetailViewModel>();
         services.AddTransient<EditInvoiceViewModel>();
         services.AddTransient<CompanySettingsViewModel>();
+
+        // Views - Register as Transient
+        services.AddTransient<MainWindow>();
+        services.AddTransient<ClientsListView>();
+        services.AddTransient<ProductsListView>();
+        services.AddTransient<InvoicesListView>();
         services.AddTransient<CompanySettingsView>();
 
-        services.AddTransient<MainWindow>();
+        // Add Serilog logger
+        services.AddSingleton(Log.Logger);
     }
 
     protected override async void OnStartup(StartupEventArgs e)
     {
         try
         {
+            Log.Information("Starting InvoiceStudio application...");
+
             await _host.StartAsync();
 
-            // Ensure database exists
+            // Make service provider globally available
+            ServiceProvider = _host.Services;
+
+            // Ensure database exists and is up to date
             using (var scope = _host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<InvoiceDbContext>();
+                Log.Information("Ensuring database exists...");
                 await context.Database.EnsureCreatedAsync();
+                Log.Information("Database ready");
             }
 
+            // Create and show main window
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
 
+            Log.Information("Application started successfully");
             base.OnStartup(e);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Startup Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Log.Fatal(ex, "Application startup failed");
+            MessageBox.Show($"Startup Error: {ex.Message}\n\nDetails: {ex.InnerException?.Message}",
+                "Application Startup Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
             Shutdown();
         }
     }
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        using (_host)
+        try
         {
-            await _host.StopAsync();
+            Log.Information("Shutting down application...");
+            using (_host)
+            {
+                await _host.StopAsync(TimeSpan.FromSeconds(5));
+            }
+            Log.Information("Application shutdown complete");
         }
-        base.OnExit(e);
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error during application shutdown");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+            base.OnExit(e);
+        }
     }
 }

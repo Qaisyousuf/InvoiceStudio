@@ -4,6 +4,7 @@ using InvoiceStudio.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvoiceStudio.Infrastructure.Migrations
 {
     [DbContext(typeof(InvoiceDbContext))]
-    partial class InvoiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251018155715_RefactorClientEntity")]
+    partial class RefactorClientEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,8 +97,8 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Country")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.Property<string>("CountryName")
                         .HasMaxLength(100)

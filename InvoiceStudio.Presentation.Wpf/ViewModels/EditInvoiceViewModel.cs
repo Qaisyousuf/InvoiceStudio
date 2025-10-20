@@ -4,7 +4,7 @@ using InvoiceStudio.Application.Abstractions;
 using InvoiceStudio.Domain.Entities;
 using Serilog;
 using System.Collections.ObjectModel;
-using static Azure.Core.HttpHeader;
+
 
 namespace InvoiceStudio.Presentation.Wpf.ViewModels;
 

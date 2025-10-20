@@ -5,17 +5,20 @@ namespace InvoiceStudio.Presentation.Wpf.Views.Clients;
 
 public partial class ClientDialogView : Window
 {
+    private ClientDialogViewModel? _viewModel;
+
     public ClientDialogView(ClientDialogViewModel viewModel)
     {
         InitializeComponent();
+        _viewModel = viewModel;
         DataContext = viewModel;
     }
 
     private async void SaveButton_Click(object sender, RoutedEventArgs e)
     {
-        if (DataContext is ClientDialogViewModel vm)
+        if (_viewModel != null)
         {
-            bool success = await vm.SaveAsync();
+            bool success = await _viewModel.SaveAsync();
             if (success)
             {
                 DialogResult = true;

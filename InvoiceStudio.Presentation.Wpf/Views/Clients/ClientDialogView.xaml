@@ -1,13 +1,53 @@
 ﻿<Window x:Class="InvoiceStudio.Presentation.Wpf.Views.Clients.ClientDialogView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{Binding Title}"
-        Width="600" Height="800"
+        Title="Client Details"
+        Width="700" Height="650"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
-        Background="#F8FAFC">
+        ResizeMode="CanResize"
+        Background="#f8fafc">
 
-    <Grid Margin="30">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#1f2937"/>
+            <Setter Property="Margin" Value="0,20,0,15"/>
+        </Style>
+
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="Foreground" Value="#374151"/>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#d1d5db"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="#d1d5db"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -16,49 +56,166 @@
 
         <!-- Header -->
         <TextBlock Grid.Row="0" 
-                   Text="{Binding Title}" 
-                   FontSize="24" 
+                   Text="Client Information" 
+                   FontSize="20" 
                    FontWeight="Bold" 
-                   Foreground="#1E293B" 
-                   Margin="0,0,0,30"/>
+                   Margin="0,0,0,20"/>
 
-        <!-- Form Content -->
+        <!-- Content -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
 
-                <!-- Client Type -->
-                <StackPanel Margin="0,0,0,20">
-                    <TextBlock Text="Client Type" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <ComboBox SelectedIndex="{Binding SelectedTypeIndex}" 
-                              Padding="12,8" 
-                              FontSize="14">
-                        <ComboBoxItem Content="Individual"/>
-                        <ComboBoxItem Content="Company"/>
-                    </ComboBox>
-                </StackPanel>
-
-                <!-- Country Selection -->
-                <StackPanel Margin="0,0,0,20">
-                    <TextBlock Text="Country/Region" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <ComboBox SelectedIndex="{Binding SelectedCountryIndex}" 
-                              Padding="12,8" 
-                              FontSize="14">
-                        <ComboBoxItem Content="International"/>
-                        <ComboBoxItem Content="France"/>
-                        <ComboBoxItem Content="Denmark"/>
-                    </ComboBox>
-                </StackPanel>
-
                 <!-- Basic Information -->
-                <Border Background="White" CornerRadius="8" Padding="20" 
-                        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
+                <TextBlock Text="Basic Information" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Client Type" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding ClientTypes}" 
+                                  SelectedItem="{Binding ClientType}"
+                                  Style="{StaticResource ComboBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Priority" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding ClientPriorities}" 
+                                  SelectedItem="{Binding Priority}"
+                                  Style="{StaticResource ComboBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Name *" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding Name}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Legal Name" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding LegalName}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Country" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Countries}" 
+                                  SelectedItem="{Binding Country}"
+                                  Style="{StaticResource ComboBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Internal Reference" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding InternalReference}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Contact Information -->
+                <TextBlock Text="Contact Information" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Email *" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding Email}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Phone" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding Phone}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Margin="0,0,0,15">
+                    <TextBlock Text="Website" Style="{StaticResource LabelStyle}"/>
+                    <TextBox Text="{Binding Website}" Style="{StaticResource TextBoxStyle}"/>
+                </StackPanel>
+
+                <!-- Address -->
+                <TextBlock Text="Address" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <StackPanel Margin="0,0,0,15">
+                    <TextBlock Text="Street Address" Style="{StaticResource LabelStyle}"/>
+                    <TextBox Text="{Binding Street}" Style="{StaticResource TextBoxStyle}"/>
+                </StackPanel>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="City" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding City}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Postal Code" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding PostalCode}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4">
+                        <TextBlock Text="Country Name" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding CountryName}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Business Information -->
+                <TextBlock Text="Tax  Business Information" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Tax ID" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding TaxId}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Category" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Categories}" 
+                                  SelectedItem="{Binding Category}"
+                                  Style="{StaticResource ComboBoxStyle}"
+                                  IsEditable="True"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- French Business Info -->
+                <Border Background="#f9fafb" BorderBrush="#e5e7eb" BorderThickness="1" Padding="15" Margin="0,0,0,15">
                     <StackPanel>
-                        <TextBlock Text="Basic Information" 
-                                   FontSize="16" 
-                                   FontWeight="SemiBold" 
-                                   Foreground="#374151" Margin="0,0,0,15"/>
-
-                        <Grid Margin="0,0,0,15">
+                        <TextBlock Text="French Business Information" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="15"/>
@@ -66,73 +223,77 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Name *" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding Name}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
+                                <TextBlock Text="SIRET Number" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Siret}" Style="{StaticResource TextBoxStyle}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Legal Name" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding LegalName}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
+                                <TextBlock Text="SIREN (Siège)" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Siren}" Style="{StaticResource TextBoxStyle}"/>
                             </StackPanel>
                         </Grid>
-
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="15"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Email" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding Email}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Phone" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding Phone}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <StackPanel>
-                            <TextBlock Text="Website" FontWeight="Medium" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding Website}" 
-                                     Padding="12,8" 
-                                     FontSize="14"
-                                     BorderBrush="#D1D5DB"/>
-                        </StackPanel>
                     </StackPanel>
                 </Border>
 
-                <!-- Address Information -->
-                <Border Background="White" CornerRadius="8" Padding="20" 
-                        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
+                <!-- Danish Business Info -->
+                <Border Background="#f9fafb" BorderBrush="#e5e7eb" BorderThickness="1" Padding="15" Margin="0,0,0,15">
                     <StackPanel>
-                        <TextBlock Text="Address Information" 
-                                   FontSize="16" 
-                                   FontWeight="SemiBold" 
-                                   Foreground="#374151" Margin="0,0,0,15"/>
+                        <TextBlock Text="Danish Business Information" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="Street" FontWeight="Medium" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding Street}" 
-                                     Padding="12,8" 
-                                     FontSize="14"
-                                     BorderBrush="#D1D5DB"/>
-                        </StackPanel>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="CVR Number" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding CvrNumber}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
 
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Danish VAT Number" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding DanishVatNumber}" Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Payment Settings -->
+                <TextBlock Text="Payment Settings" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Currency" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox ItemsSource="{Binding Currencies}" 
+                                  SelectedItem="{Binding PreferredCurrency}"
+                                  Style="{StaticResource ComboBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Payment Terms (Days)" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding PaymentTermDays}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4">
+                        <TextBlock Text="Default Discount %" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Text="{Binding DefaultDiscountPercent}" Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Statistics (for edit mode only) -->
+                <Border Background="#f8fafc" BorderBrush="#e2e8f0" BorderThickness="1" Padding="15" Margin="0,0,0,15"
+                        Visibility="{Binding IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock Text="Client Statistics" FontWeight="SemiBold" Margin="0,0,0,10"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -140,226 +301,74 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="15"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="City" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding City}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
+                                <TextBlock Text="Total Invoices" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="{Binding TotalInvoices}" FontWeight="Bold"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Postal Code" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding PostalCode}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
+                                <TextBlock Text="Total Revenue" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="{Binding TotalRevenue, StringFormat=C}" FontWeight="Bold"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4">
-                                <TextBlock Text="Country" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding CountryName}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
+                                <TextBlock Text="Overdue Amount" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="{Binding OverdueAmount, StringFormat=C}" FontWeight="Bold" Foreground="#ef4444"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="6">
+                                <TextBlock Text="Avg Payment Days" Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="{Binding AveragePaymentDays, StringFormat=F1}" FontWeight="Bold"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- French Business Information -->
-                <Border Background="White" CornerRadius="8" Padding="20" 
-        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ShowFrenchFields}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackPanel>
-                        <TextBlock Text="🇫🇷 French Business Information" 
-                   FontSize="16" 
-                   FontWeight="SemiBold" 
-                   Foreground="#374151" Margin="0,0,0,15"/>
+                <!-- Logo -->
+                <TextBlock Text="Client Logo" Style="{StaticResource SectionHeaderStyle}"/>
 
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="15"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                    <Button Content="Upload Logo" 
+                            Command="{Binding SelectLogoCommand}"
+                            Background="#3b82f6" 
+                            Foreground="White"
+                            Style="{StaticResource ButtonStyle}"/>
+                    <Button Content="Remove Logo" 
+                            Command="{Binding RemoveLogoCommand}"
+                            Background="#ef4444" 
+                            Foreground="White"
+                            Style="{StaticResource ButtonStyle}"
+                            IsEnabled="{Binding HasLogo}"/>
+                </StackPanel>
 
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="SIRET Number (14 digits)" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding Siret}" 
-                         Padding="12,8" 
-                         FontSize="14"
-                         BorderBrush="#D1D5DB"
-                         MaxLength="14"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Intra-Community VAT" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding IntraCommunityVat}" 
-                         Padding="12,8" 
-                         FontSize="14"
-                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
+                <Border Background="#f9fafb" BorderBrush="#e5e7eb" BorderThickness="1" 
+                        Height="100" Width="100" HorizontalAlignment="Left" Margin="0,0,0,15">
+                    <Grid>
+                        <TextBlock Text="No Logo" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="#9ca3af"
+                                   Visibility="{Binding HasLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Image Source="{Binding LogoPath}" Stretch="Uniform" Margin="5"
+                               Visibility="{Binding HasLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
                 </Border>
 
-                <!-- Danish Business Information -->
-                <Border Background="White" CornerRadius="8" Padding="20" 
-        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ShowDanishFields}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackPanel>
-                        <TextBlock Text="🇩🇰 Danish Business Information" 
-                   FontSize="16" 
-                   FontWeight="SemiBold" 
-                   Foreground="#374151" Margin="0,0,0,15"/>
+                <!-- Notes -->
+                <TextBlock Text="Notes" Style="{StaticResource SectionHeaderStyle}"/>
+                <TextBox Text="{Binding Notes}" 
+                         AcceptsReturn="True" 
+                         Height="80" 
+                         Style="{StaticResource TextBoxStyle}"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"/>
 
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="15"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="CVR Number (8 digits)" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding CvrNumber}" 
-                         Padding="12,8" 
-                         FontSize="14"
-                         BorderBrush="#D1D5DB"
-                         MaxLength="8"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Danish VAT Number" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding DanishVatNumber}" 
-                         Padding="12,8" 
-                         FontSize="14"
-                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- International Business Information -->
-                <Border Background="White" CornerRadius="8" Padding="20" 
-        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ShowGenericFields}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackPanel>
-                        <TextBlock Text="Business Information" 
-                   FontSize="16" 
-                   FontWeight="SemiBold" 
-                   Foreground="#374151" Margin="0,0,0,15"/>
-
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="15"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Tax ID" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding TaxId}" 
-                         Padding="12,8" 
-                         FontSize="14"
-                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="VAT Number" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding VatNumber}" 
-                         Padding="12,8" 
-                         FontSize="14"
-                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Payment Settings -->
-                <Border Background="White" CornerRadius="8" Padding="20" 
-                        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
-                    <StackPanel>
-                        <TextBlock Text="Payment Settings" 
-                                   FontSize="16" 
-                                   FontWeight="SemiBold" 
-                                   Foreground="#374151" Margin="0,0,0,15"/>
-
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="15"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Preferred Currency" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <ComboBox SelectedValue="{Binding PreferredCurrency}" 
-                                          SelectedValuePath="Content"
-                                          Padding="12,8" 
-                                          FontSize="14">
-                                    <ComboBoxItem Content="EUR"/>
-                                    <ComboBoxItem Content="USD"/>
-                                    <ComboBoxItem Content="DKK"/>
-                                    <ComboBoxItem Content="GBP"/>
-                                </ComboBox>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Payment Terms (Days)" FontWeight="Medium" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding PaymentTermDays}" 
-                                         Padding="12,8" 
-                                         FontSize="14"
-                                         BorderBrush="#D1D5DB"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="Notes" FontWeight="Medium" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding Notes}" 
-                                     AcceptsReturn="True" 
-                                     Height="80" 
-                                     Padding="12,8" 
-                                     FontSize="14"
-                                     BorderBrush="#D1D5DB" 
-                                     VerticalScrollBarVisibility="Auto"/>
-                        </StackPanel>
-
-                        <CheckBox IsChecked="{Binding IsActive}" 
-                                  Content="Active" 
-                                  FontWeight="Medium"/>
-                    </StackPanel>
-                </Border>
+                <CheckBox IsChecked="{Binding IsActive}" 
+                          Content="Active Client" 
+                          FontWeight="Medium" 
+                          Margin="0,15,0,0"/>
             </StackPanel>
         </ScrollViewer>
 
@@ -367,26 +376,37 @@
         <StackPanel Grid.Row="2" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right" 
-                    Margin="0,30,0,0">
+                    Margin="0,20,0,0">
 
             <Button Content="Cancel" 
                     Click="CancelButton_Click"
-                    Padding="20,10" 
-                    MinWidth="100"
-                    Background="#6B7280" 
-                    Foreground="White" 
-                    BorderThickness="0" 
-                    FontWeight="SemiBold"
-                    Margin="0,0,15,0"/>
+                    Background="#6b7280" 
+                    Foreground="White"
+                    Style="{StaticResource ButtonStyle}"/>
 
             <Button Content="Save" 
                     Click="SaveButton_Click"
-                    Padding="20,10" 
-                    MinWidth="100"
-                    Background="#10B981" 
-                    Foreground="White" 
-                    BorderThickness="0" 
-                    FontWeight="SemiBold"/>
+                    Background="#10b981" 
+                    Foreground="White"
+                    Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
+
+        <!-- Loading Overlay -->
+        <Border Grid.RowSpan="3" 
+                Background="#80000000" 
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" 
+                             Width="200" 
+                             Height="4" 
+                             Background="Transparent" 
+                             Foreground="#10b981"/>
+                <TextBlock Text="Saving..." 
+                           Foreground="White" 
+                           FontWeight="Medium" 
+                           Margin="0,10,0,0" 
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
