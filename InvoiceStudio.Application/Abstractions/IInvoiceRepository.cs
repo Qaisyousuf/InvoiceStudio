@@ -13,4 +13,6 @@ public interface IInvoiceRepository : IRepository<Invoice>
 
     Task DeleteInvoiceLinesAsync(Guid invoiceId);
     Task<bool> UpdateInvoiceBasicAsync(Guid invoiceId, string? notes, string? terms);
+    Task<Invoice> CreateInvoiceWithCompanyAsync(string invoiceNumber, Guid clientId, DateTime issueDate, DateTime dueDate, string currency = "EUR", CancellationToken cancellationToken = default);
+
 }

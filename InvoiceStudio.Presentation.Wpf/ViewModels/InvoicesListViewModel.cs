@@ -13,8 +13,10 @@ namespace InvoiceStudio.Presentation.Wpf.ViewModels;
 public partial class InvoicesListViewModel : ViewModelBase
 {
     private readonly IInvoiceRepository _invoiceRepository;
+    private readonly ICompanyRepository _companyRepository;
     private readonly ILogger _logger;
     private readonly IServiceProvider _serviceProvider;
+
     private bool _isLoading;
 
     public ObservableCollection<Invoice> Invoices { get; } = new();
@@ -32,11 +34,25 @@ public partial class InvoicesListViewModel : ViewModelBase
     [ObservableProperty]
     private decimal _totalRevenue;
 
-    public InvoicesListViewModel(IInvoiceRepository invoiceRepository, ILogger logger, IServiceProvider serviceProvider)
+    [ObservableProperty]
+    private int _issuedInvoices;
+
+    [ObservableProperty]
+    private int _overdueInvoices;
+
+    [ObservableProperty]
+    private decimal _outstandingAmount;
+
+    public InvoicesListViewModel(
+        IInvoiceRepository invoiceRepository,
+        ILogger logger,
+        IServiceProvider serviceProvider,
+        ICompanyRepository companyRepository)
     {
         _invoiceRepository = invoiceRepository;
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _companyRepository = companyRepository;
         Title = "Invoices";
     }
 
@@ -68,8 +84,6 @@ public partial class InvoicesListViewModel : ViewModelBase
             _logger.Error(ex, "Error opening create invoice dialog");
         }
     }
-
-  
 
     [RelayCommand]
     private async Task LoadInvoicesAsync()
@@ -111,7 +125,14 @@ public partial class InvoicesListViewModel : ViewModelBase
         TotalInvoices = Invoices.Count;
         DraftInvoices = Invoices.Count(i => i.Status == InvoiceStatus.Draft);
         PaidInvoices = Invoices.Count(i => i.Status == InvoiceStatus.Paid);
+        IssuedInvoices = Invoices.Count(i => i.Status == InvoiceStatus.Issued || i.Status == InvoiceStatus.Sent);
+        OverdueInvoices = Invoices.Count(i => i.Status == InvoiceStatus.Overdue ||
+            (i.Status == InvoiceStatus.Sent && DateTime.UtcNow > i.DueDate));
+
         TotalRevenue = Invoices.Where(i => i.Status == InvoiceStatus.Paid).Sum(i => i.TotalAmount);
+        OutstandingAmount = Invoices.Where(i => i.Status != InvoiceStatus.Paid &&
+            i.Status != InvoiceStatus.Cancelled && i.Status != InvoiceStatus.Draft)
+            .Sum(i => i.GetOutstandingBalance());
     }
 
     [RelayCommand]
@@ -211,8 +232,9 @@ public partial class InvoicesListViewModel : ViewModelBase
                 return;
             }
 
-            // Call domain method on tracked entity
-            trackedInvoice.MarkAsPaid(trackedInvoice.TotalAmount - trackedInvoice.PaidAmount, DateTime.Today);
+            // Call domain method on tracked entity - pay full outstanding amount
+            var outstandingAmount = trackedInvoice.GetOutstandingBalance();
+            trackedInvoice.MarkAsPaid(outstandingAmount, DateTime.Today);
 
             // Save changes
             await _invoiceRepository.SaveChangesAsync();
@@ -265,6 +287,7 @@ public partial class InvoicesListViewModel : ViewModelBase
             _logger.Error(ex, "Failed to cancel invoice {InvoiceNumber}", invoice?.InvoiceNumber);
         }
     }
+
     [RelayCommand]
     private async Task ViewInvoiceAsync(Invoice invoice)
     {
@@ -322,5 +345,59 @@ public partial class InvoicesListViewModel : ViewModelBase
         {
             _logger.Error(ex, "Error opening edit dialog");
         }
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        await LoadInvoicesAsync();
+    }
+
+    [RelayCommand]
+    private async Task DeleteInvoiceAsync(Invoice invoice)
+    {
+        try
+        {
+            if (invoice == null)
+            {
+                _logger.Warning("Cannot delete null invoice");
+                return;
+            }
+
+            if (!invoice.CanBeDeleted())
+            {
+                _logger.Warning("Invoice {InvoiceNumber} cannot be deleted in status {Status}",
+                    invoice.InvoiceNumber, invoice.Status);
+                return;
+            }
+
+            _logger.Information("Deleting invoice {InvoiceNumber}", invoice.InvoiceNumber);
+
+            // Get the tracked entity from database first
+            var trackedInvoice = await _invoiceRepository.GetByIdAsync(invoice.Id);
+            if (trackedInvoice == null)
+            {
+                _logger.Error("Invoice not found: {InvoiceId}", invoice.Id);
+                return;
+            }
+
+            await _invoiceRepository.DeleteAsync(trackedInvoice);
+            await _invoiceRepository.SaveChangesAsync();
+
+            // Remove from local collection
+            Invoices.Remove(invoice);
+            UpdateDashboardStats();
+
+            _logger.Information("Invoice {InvoiceNumber} deleted successfully", invoice.InvoiceNumber);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to delete invoice {InvoiceNumber}", invoice?.InvoiceNumber);
+        }
+    }
+
+    public async Task InitializeAsync()
+    {
+        await LoadInvoicesAsync();
     }
 }

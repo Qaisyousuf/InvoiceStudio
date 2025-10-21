@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace InvoiceStudio.Presentation.Wpf.ViewModels;
 
-// Add this helper class for line item management
+// Fixed InvoiceLineViewModel - removed conflicting partial methods
 public partial class InvoiceLineViewModel : ObservableObject
 {
     [ObservableProperty]
@@ -17,30 +17,50 @@ public partial class InvoiceLineViewModel : ObservableObject
     [ObservableProperty]
     private string _description = string.Empty;
 
-    [ObservableProperty]
     private decimal _quantity = 1;
+    public decimal Quantity
+    {
+        get => _quantity;
+        set
+        {
+            SetProperty(ref _quantity, value);
+            UpdateCalculatedProperties();
+        }
+    }
 
-    [ObservableProperty]
     private decimal _unitPrice = 0;
+    public decimal UnitPrice
+    {
+        get => _unitPrice;
+        set
+        {
+            SetProperty(ref _unitPrice, value);
+            UpdateCalculatedProperties();
+        }
+    }
 
-    [ObservableProperty]
     private decimal _taxRate = 20.0m;
-
-   
+    public decimal TaxRate
+    {
+        get => _taxRate;
+        set
+        {
+            SetProperty(ref _taxRate, value);
+            UpdateCalculatedProperties();
+        }
+    }
 
     public decimal LineTotal => Quantity * UnitPrice;
     public decimal TaxAmount => LineTotal * (TaxRate / 100);
     public decimal LineTotalWithTax => LineTotal + TaxAmount;
-
-    partial void OnQuantityChanged(decimal value) => UpdateCalculatedProperties();
-    partial void OnUnitPriceChanged(decimal value) => UpdateCalculatedProperties();
-    partial void OnTaxRateChanged(decimal value) => UpdateCalculatedProperties();
+    public decimal SubTotal => LineTotal;
 
     private void UpdateCalculatedProperties()
     {
         OnPropertyChanged(nameof(LineTotal));
         OnPropertyChanged(nameof(TaxAmount));
         OnPropertyChanged(nameof(LineTotalWithTax));
+        OnPropertyChanged(nameof(SubTotal));
     }
 
     partial void OnSelectedProductChanged(Product? value)
@@ -59,6 +79,7 @@ public partial class InvoiceDialogViewModel : ViewModelBase
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly IClientRepository _clientRepository;
     private readonly IProductRepository _productRepository;
+    private readonly ICompanyRepository _companyRepository;
     private readonly ILogger _logger;
 
     // Invoice Basic Information
@@ -91,20 +112,100 @@ public partial class InvoiceDialogViewModel : ViewModelBase
     [ObservableProperty]
     private string? _terms;
 
+    // Company Information Properties (Read-only for display)
+    [ObservableProperty]
+    private string _companyName = string.Empty;
+
+    [ObservableProperty]
+    private string _companyLegalForm = string.Empty;
+
+    [ObservableProperty]
+    private string _companySiret = string.Empty;
+
+    [ObservableProperty]
+    private string _companyApeCode = string.Empty;
+
+    [ObservableProperty]
+    private string _companyStreet = string.Empty;
+
+    [ObservableProperty]
+    private string _companyCity = string.Empty;
+
+    [ObservableProperty]
+    private string _companyPostalCode = string.Empty;
+
+    [ObservableProperty]
+    private string _companyCountry = string.Empty;
+
+    [ObservableProperty]
+    private string _companyEmail = string.Empty;
+
+    [ObservableProperty]
+    private string _companyPhone = string.Empty;
+
+    [ObservableProperty]
+    private string _companyWebsite = string.Empty;
+
+    [ObservableProperty]
+    private string _companyBankName = string.Empty;
+
+    [ObservableProperty]
+    private string _companyIban = string.Empty;
+
+    [ObservableProperty]
+    private string _companySwift = string.Empty;
+
+    [ObservableProperty]
+    private string _companyVatNumber = string.Empty;
+
+    [ObservableProperty]
+    private string _companyBusinessRegistration = string.Empty;
+
+    // French RIB Components
+    [ObservableProperty]
+    private string _companyFrenchRib = string.Empty;
+
+    [ObservableProperty]
+    private string _companyFrenchBankCode = string.Empty;
+
+    [ObservableProperty]
+    private string _companyFrenchBranchCode = string.Empty;
+
+    [ObservableProperty]
+    private string _companyFrenchAccountNumber = string.Empty;
+
+    [ObservableProperty]
+    private string _companyFrenchRibKey = string.Empty;
+
     // Calculated Totals
-    public decimal SubTotal => InvoiceLines.Sum(line => line.LineTotal);
+    public decimal SubTotal => InvoiceLines.Sum(line => line.SubTotal);
     public decimal TaxAmount => InvoiceLines.Sum(line => line.TaxAmount);
     public decimal TotalAmount => SubTotal + TaxAmount;
+
+    // Edit Mode Properties
+    private Invoice? _existingInvoice;
+    private Company? _currentCompany;
+
+    [ObservableProperty]
+    private bool _isEditMode;
+
+    [ObservableProperty]
+    private bool _hasValidationErrors;
+
+    [ObservableProperty]
+    private string _validationMessage = string.Empty;
 
     public InvoiceDialogViewModel(
         IInvoiceRepository invoiceRepository,
         IClientRepository clientRepository,
         IProductRepository productRepository,
+        ICompanyRepository companyRepository,
         ILogger logger)
     {
         _invoiceRepository = invoiceRepository;
         _clientRepository = clientRepository;
         _productRepository = productRepository;
+        _companyRepository = companyRepository;
         _logger = logger;
         Title = "New Invoice";
 
@@ -119,6 +220,7 @@ public partial class InvoiceDialogViewModel : ViewModelBase
     {
         try
         {
+            IsBusy = true;
             _logger.Information("Loading invoice dialog data...");
 
             // Load available clients
@@ -137,13 +239,61 @@ public partial class InvoiceDialogViewModel : ViewModelBase
                 AvailableProducts.Add(product);
             }
 
-            _logger.Information("Loaded {ClientCount} clients and {ProductCount} products",
+            // Load company information
+            _currentCompany = await _companyRepository.GetFirstAsync();
+            if (_currentCompany != null)
+            {
+                LoadCompanyInfo(_currentCompany);
+            }
+
+            _logger.Information("Loaded {ClientCount} clients, {ProductCount} products, and company information",
                 clients.Count, products.Count);
         }
         catch (Exception ex)
         {
             _logger.Error(ex, "Error loading invoice dialog data");
+            HasValidationErrors = true;
+            ValidationMessage = "Failed to load required data. Please try again.";
         }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void LoadCompanyInfo(Company company)
+    {
+        CompanyName = company.Name;
+        CompanyLegalForm = company.LegalForm ?? string.Empty;
+        CompanySiret = company.Siret ?? string.Empty;
+        CompanyApeCode = company.ApeCode ?? string.Empty;
+        CompanyStreet = company.Street ?? string.Empty;
+        CompanyCity = company.City ?? string.Empty;
+        CompanyPostalCode = company.PostalCode ?? string.Empty;
+        CompanyCountry = company.CountryName ?? string.Empty; // Use CountryName instead of Country
+        CompanyEmail = company.Email ?? string.Empty;
+        CompanyPhone = company.Phone ?? string.Empty;
+        CompanyWebsite = company.Website ?? string.Empty;
+        CompanyBankName = company.BankName ?? string.Empty;
+        CompanyIban = company.Iban ?? string.Empty;
+        CompanySwift = company.Swift ?? string.Empty;
+        CompanyVatNumber = company.VatNumber ?? string.Empty;
+        CompanyBusinessRegistration = company.BusinessRegistrationNumber ?? string.Empty;
+
+        // Load French RIB components if available
+        CompanyFrenchBankCode = company.FrenchBankCode ?? string.Empty;
+        CompanyFrenchBranchCode = company.FrenchBranchCode ?? string.Empty;
+        CompanyFrenchAccountNumber = company.FrenchAccountNumber ?? string.Empty;
+        CompanyFrenchRibKey = company.FrenchRibKey ?? string.Empty;
+
+        // Format French RIB if components are available
+        if (!string.IsNullOrEmpty(company.FrenchBankCode))
+        {
+            CompanyFrenchRib = $"{company.FrenchBankCode} {company.FrenchBranchCode} {company.FrenchAccountNumber} {company.FrenchRibKey}";
+        }
+
+        // Set default currency from company
+        Currency = company.DefaultCurrency;
     }
 
     [RelayCommand]
@@ -155,7 +305,8 @@ public partial class InvoiceDialogViewModel : ViewModelBase
         newLine.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == nameof(InvoiceLineViewModel.LineTotal) ||
-                e.PropertyName == nameof(InvoiceLineViewModel.TaxAmount))
+                e.PropertyName == nameof(InvoiceLineViewModel.TaxAmount) ||
+                e.PropertyName == nameof(InvoiceLineViewModel.SubTotal))
             {
                 UpdateTotals();
             }
@@ -163,6 +314,7 @@ public partial class InvoiceDialogViewModel : ViewModelBase
 
         InvoiceLines.Add(newLine);
         _logger.Information("Added new invoice line");
+        ClearValidation();
     }
 
     [RelayCommand]
@@ -171,6 +323,7 @@ public partial class InvoiceDialogViewModel : ViewModelBase
         if (line != null && InvoiceLines.Contains(line))
         {
             InvoiceLines.Remove(line);
+            UpdateTotals();
             _logger.Information("Removed invoice line");
         }
     }
@@ -181,25 +334,52 @@ public partial class InvoiceDialogViewModel : ViewModelBase
         OnPropertyChanged(nameof(TaxAmount));
         OnPropertyChanged(nameof(TotalAmount));
     }
-    [RelayCommand]
 
+    private bool ValidateInvoice()
+    {
+        var errors = new List<string>();
+
+        if (SelectedClient == null)
+            errors.Add("Client selection is required");
+
+        if (string.IsNullOrWhiteSpace(InvoiceNumber))
+            errors.Add("Invoice number is required");
+
+        if (!InvoiceLines.Any())
+            errors.Add("At least one invoice line is required");
+
+        if (InvoiceLines.Any(line => line.Quantity <= 0))
+            errors.Add("All invoice lines must have quantity greater than 0");
+
+        if (InvoiceLines.Any(line => line.UnitPrice < 0))
+            errors.Add("Unit price cannot be negative");
+
+        if (IssueDate > DueDate)
+            errors.Add("Due date must be after issue date");
+
+        if (_currentCompany == null)
+            errors.Add("Company information is required");
+
+        HasValidationErrors = errors.Any();
+        ValidationMessage = string.Join("; ", errors);
+
+        return !HasValidationErrors;
+    }
+
+    private void ClearValidation()
+    {
+        HasValidationErrors = false;
+        ValidationMessage = string.Empty;
+    }
+
+    [RelayCommand]
     public async Task<bool> SaveAsync()
     {
         try
         {
-            if (SelectedClient == null)
+            if (!ValidateInvoice())
             {
-                _logger.Warning("Client selection is required");
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(InvoiceNumber))
-            {
-                _logger.Warning("Invoice number is required");
-                return false;
-            }
-            if (!InvoiceLines.Any())
-            {
-                _logger.Warning("At least one invoice line is required");
+                _logger.Warning("Invoice validation failed: {ValidationMessage}", ValidationMessage);
                 return false;
             }
 
@@ -207,7 +387,16 @@ public partial class InvoiceDialogViewModel : ViewModelBase
             _logger.Information("Creating new invoice {InvoiceNumber}", InvoiceNumber);
 
             // Create new invoice
-            var invoice = new Invoice(InvoiceNumber, SelectedClient.Id, IssueDate, DueDate, Currency);
+            var invoice = new Invoice(
+                InvoiceNumber,
+                SelectedClient!.Id,
+                _currentCompany!.Id,
+                IssueDate,
+                DueDate,
+                Currency);
+
+            // Apply company defaults (legal mentions, payment terms, etc.)
+            ApplyCompanyDefaults(invoice);
 
             // Set notes and terms if available
             if (!string.IsNullOrEmpty(Notes) || !string.IsNullOrEmpty(Terms))
@@ -215,34 +404,36 @@ public partial class InvoiceDialogViewModel : ViewModelBase
                 invoice.UpdateNotes(Notes, Terms);
             }
 
-            // Add invoice lines BEFORE saving (let EF Core handle the relationships)
-            foreach (var lineVm in InvoiceLines)
+            // Add invoice lines
+            foreach (var lineVm in InvoiceLines.Where(l => l.Quantity > 0))
             {
-                if (lineVm.Quantity > 0 && lineVm.UnitPrice >= 0) // Allow 0 price for free items
-                {
-                    var invoiceLine = new InvoiceLine(
-                        invoice.Id,                    // invoice.Id (will be a new Guid, EF Core will handle FK)
-                        lineVm.Description,            // description
-                        lineVm.Quantity,               // quantity
-                        lineVm.UnitPrice,              // unitPrice
-                        lineVm.TaxRate,                // taxRate
-                        lineVm.SelectedProduct?.Id     // productId (optional)
-                    );
-                    invoice.AddLine(invoiceLine);
-                }
+                var invoiceLine = new InvoiceLine(
+                    invoice.Id,
+                    lineVm.Description,
+                    lineVm.Quantity,
+                    lineVm.UnitPrice,
+                    lineVm.TaxRate,
+                    lineVm.SelectedProduct?.Id
+                );
+
+                invoice.AddLine(invoiceLine);
             }
 
-            // Save everything in one operation
+            // Save invoice
             await _invoiceRepository.AddAsync(invoice);
             await _invoiceRepository.SaveChangesAsync();
 
             _logger.Information("Invoice {InvoiceNumber} created successfully with {LineCount} lines",
                 InvoiceNumber, invoice.Lines.Count);
+
+            ClearValidation();
             return true;
         }
         catch (Exception ex)
         {
             _logger.Error(ex, "Error creating invoice");
+            HasValidationErrors = true;
+            ValidationMessage = "Failed to save invoice. Please try again.";
             return false;
         }
         finally
@@ -251,18 +442,126 @@ public partial class InvoiceDialogViewModel : ViewModelBase
         }
     }
 
+    private void ApplyCompanyDefaults(Invoice invoice)
+    {
+        if (_currentCompany == null) return;
+
+        // Set payment terms (use a default since your Company entity doesn't have DefaultPaymentTerms)
+        invoice.SetPaymentTerms("Paiement à réception");
+
+        // Set legal mentions based on company country
+        if (_currentCompany.Country?.ToUpper() == "FR")
+        {
+            invoice.SetFrenchLegalMentions(
+                _currentCompany.Siret ?? string.Empty,
+                _currentCompany.ApeCode ?? string.Empty,
+                _currentCompany.IsVatExempt
+            );
+        }
+        else if (_currentCompany.Country?.ToUpper() == "DK")
+        {
+            invoice.SetDanishLegalMentions(
+                _currentCompany.CvrNumber ?? string.Empty,
+                _currentCompany.IsVatExempt
+            );
+        }
+    }
+
+    [RelayCommand]
+    private void CancelDialog()
+    {
+        _logger.Information("Invoice creation cancelled");
+        ClearValidation();
+    }
+
+    [RelayCommand]
+    private void ClearForm()
+    {
+        InvoiceLines.Clear();
+        SelectedClient = null;
+        Notes = null;
+        Terms = null;
+        IssueDate = DateTime.Today;
+        DueDate = DateTime.Today.AddDays(30);
+        GenerateInvoiceNumber();
+        ClearValidation();
+        _logger.Information("Invoice form cleared");
+    }
+
     private void GenerateInvoiceNumber()
     {
         var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
         InvoiceNumber = $"INV-{timestamp}";
     }
 
-    // Add these new properties to your existing class
-    private Invoice? _existingInvoice;
+    // For edit mode functionality
+    public async Task LoadInvoiceForEditAsync(Guid invoiceId)
+    {
+        try
+        {
+            IsBusy = true;
+            IsEditMode = true;
+            Title = "Edit Invoice";
 
-    [ObservableProperty]
-    private bool _isEditMode;
+            _existingInvoice = await _invoiceRepository.GetByIdAsync(invoiceId);
+            if (_existingInvoice == null)
+            {
+                HasValidationErrors = true;
+                ValidationMessage = "Invoice not found";
+                return;
+            }
 
-    // Add this new method to load existing invoice data
-  
+            // Load basic data first
+            await LoadDataAsync();
+
+            // Populate form with existing invoice data
+            InvoiceNumber = _existingInvoice.InvoiceNumber;
+            Currency = _existingInvoice.Currency;
+            IssueDate = _existingInvoice.IssueDate;
+            DueDate = _existingInvoice.DueDate;
+            SelectedClient = AvailableClients.FirstOrDefault(c => c.Id == _existingInvoice.ClientId);
+            Notes = _existingInvoice.Notes;
+            Terms = _existingInvoice.Terms;
+
+            // Load existing lines
+            InvoiceLines.Clear();
+            foreach (var line in _existingInvoice.Lines)
+            {
+                var lineVm = new InvoiceLineViewModel
+                {
+                    Description = line.Description,
+                    Quantity = line.Quantity,
+                    UnitPrice = line.UnitPrice,
+                    TaxRate = line.TaxRate,
+                    SelectedProduct = AvailableProducts.FirstOrDefault(p => p.Id == line.ProductId)
+                };
+
+                // Subscribe to changes
+                lineVm.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(InvoiceLineViewModel.LineTotal) ||
+                        e.PropertyName == nameof(InvoiceLineViewModel.TaxAmount) ||
+                        e.PropertyName == nameof(InvoiceLineViewModel.SubTotal))
+                    {
+                        UpdateTotals();
+                    }
+                };
+
+                InvoiceLines.Add(lineVm);
+            }
+
+            UpdateTotals();
+            _logger.Information("Loaded invoice {InvoiceNumber} for editing", _existingInvoice.InvoiceNumber);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error loading invoice for edit");
+            HasValidationErrors = true;
+            ValidationMessage = "Failed to load invoice for editing";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 }

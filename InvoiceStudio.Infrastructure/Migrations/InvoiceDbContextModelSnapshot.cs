@@ -662,6 +662,9 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.Property<Guid?>("ClientId1")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -677,31 +680,13 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EarlyPaymentDiscountDays")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("EarlyPaymentDiscountRate")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<decimal>("FixedRecoveryFee")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsReverseTax")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("LatePenaltyRate")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("LegalMentions")
                         .HasMaxLength(2000)
@@ -720,10 +705,6 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.Property<string>("PaymentTerms")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ReverseTaxMention")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -755,6 +736,8 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.HasIndex("ClientId1");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("DueDate");
 
                     b.HasIndex("InvoiceNumber")
@@ -763,6 +746,9 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.HasIndex("IssueDate");
 
                     b.HasIndex("Status");
+
+                    b.HasIndex("Status", "DueDate")
+                        .HasDatabaseName("IX_Invoice_Status_DueDate");
 
                     b.ToTable("Invoices", (string)null);
                 });
@@ -1058,13 +1044,23 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Invoices_Clients_ClientId");
 
                     b.HasOne("InvoiceStudio.Domain.Entities.Client", null)
                         .WithMany("Invoices")
                         .HasForeignKey("ClientId1");
 
+                    b.HasOne("InvoiceStudio.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Invoices_Companies_CompanyId");
+
                     b.Navigation("Client");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("InvoiceStudio.Domain.Entities.InvoiceLine", b =>
@@ -1073,7 +1069,8 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .WithMany("Lines")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_InvoiceLines_Invoices_InvoiceId");
 
                     b.HasOne("InvoiceStudio.Domain.Entities.Product", "Product")
                         .WithMany()

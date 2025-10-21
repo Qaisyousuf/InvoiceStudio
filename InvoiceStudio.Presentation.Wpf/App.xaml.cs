@@ -1,4 +1,5 @@
 ﻿using InvoiceStudio.Application.Abstractions;
+using InvoiceStudio.Infrastructure.Documents;
 using InvoiceStudio.Infrastructure.Persistence;
 using InvoiceStudio.Infrastructure.Persistence.Repositories;
 using InvoiceStudio.Presentation.Wpf.Services;
@@ -24,6 +25,8 @@ public partial class App : System.Windows.Application
     public App()
     {
         _host = CreateHostBuilder().Build();
+        // Add this at the top of your App.xaml.cs constructor
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
     }
 
     public static IHostBuilder CreateHostBuilder()
@@ -72,6 +75,7 @@ public partial class App : System.Windows.Application
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
         services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+        services.AddScoped<IPdfService, PdfService>();
 
         // Services
         services.AddScoped<IBankStatementOcrService, BankStatementOcrService>();

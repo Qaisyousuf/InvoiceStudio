@@ -468,43 +468,62 @@
         </ScrollViewer>
 
         <!-- Footer with Action Buttons -->
+        <!-- Footer with Action Buttons -->
         <Border Grid.Row="2" 
-                Background="White" 
-                CornerRadius="0,0,12,12" 
-                Padding="30,20" 
-                BorderBrush="#E2E8F0" 
-                BorderThickness="1,0,1,1">
+        Background="White" 
+        CornerRadius="0,0,12,12" 
+        Padding="30,20" 
+        BorderBrush="#E2E8F0" 
+        BorderThickness="1,0,1,1">
             <StackPanel Orientation="Horizontal" 
-                        HorizontalAlignment="Right">
+                HorizontalAlignment="Right">
+                <Button Content="Save PDF As..." 
+        Command="{Binding SavePdfAsCommand}"
+        Padding="20,10" 
+        MinWidth="120"
+        Background="#F59E0B" 
+        Foreground="White" 
+        BorderThickness="0" 
+        FontWeight="SemiBold"
+        Margin="0,0,15,0"/>
+                <Button Content="Generate PDF" 
+                Command="{Binding GeneratePdfCommand}"
+                Padding="20,10" 
+                MinWidth="120"
+                Background="#DC2626" 
+                Foreground="White" 
+                BorderThickness="0" 
+                FontWeight="SemiBold"
+                Margin="0,0,15,0"/>
 
                 <Button Content="Print" 
-                        Command="{Binding PrintCommand}"
-                        Padding="20,10" 
-                        MinWidth="100"
-                        Background="#6366F1" 
-                        Foreground="White" 
-                        BorderThickness="0" 
-                        FontWeight="SemiBold"
-                        Margin="0,0,15,0"/>
+                Command="{Binding PrintCommand}"
+                Padding="20,10" 
+                MinWidth="100"
+                Background="#6366F1" 
+                Foreground="White" 
+                BorderThickness="0" 
+                FontWeight="SemiBold"
+                Margin="0,0,15,0"/>
 
                 <Button Content="Email" 
-                        Command="{Binding EmailCommand}"
-                        Padding="20,10" 
-                        MinWidth="100"
-                        Background="#10B981" 
-                        Foreground="White" 
-                        BorderThickness="0" 
-                        FontWeight="SemiBold"
-                        Margin="0,0,15,0"/>
+                Command="{Binding EmailCommand}"
+                Padding="20,10" 
+                MinWidth="100"
+                Background="#10B981" 
+                Foreground="White" 
+                BorderThickness="0" 
+                FontWeight="SemiBold"
+                Margin="0,0,15,0"/>
 
                 <Button Content="Close" 
-                        Click="CloseButton_Click"
-                        Padding="20,10" 
-                        MinWidth="100"
-                        Background="#6B7280" 
-                        Foreground="White" 
-                        BorderThickness="0" 
-                        FontWeight="SemiBold"/>
+                Click="CloseButton_Click"
+                Padding="20,10" 
+                MinWidth="100"
+                Background="#6B7280" 
+                Foreground="White" 
+                BorderThickness="0" 
+                FontWeight="SemiBold"/>
             </StackPanel>
         </Border>
 

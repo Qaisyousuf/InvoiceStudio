@@ -13,6 +13,7 @@ public partial class InvoiceDetailViewModel : ViewModelBase
 {
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly ILogger _logger;
+    private readonly IPdfService _pdfService;
 
     // Invoice Details
     [ObservableProperty]
@@ -82,11 +83,12 @@ public partial class InvoiceDetailViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isOverdue;
 
-    public InvoiceDetailViewModel(IInvoiceRepository invoiceRepository, ILogger logger)
+    public InvoiceDetailViewModel(IInvoiceRepository invoiceRepository, ILogger logger, IPdfService pdfService)
     {
         _invoiceRepository = invoiceRepository;
         _logger = logger;
         Title = "Invoice Details";
+        _pdfService = pdfService;
     }
 
     public async Task LoadInvoiceAsync(Guid invoiceId)
@@ -200,5 +202,97 @@ public partial class InvoiceDetailViewModel : ViewModelBase
     {
         // TODO: Implement email sending
         _logger.Information("Email requested for invoice {InvoiceNumber}", InvoiceNumber);
+    }
+
+    [RelayCommand]
+    private async Task GeneratePdfAsync()
+    {
+        try
+        {
+            if (Invoice == null)
+            {
+                _logger.Warning("Cannot generate PDF: Invoice is null");
+                return;
+            }
+
+            IsBusy = true;
+            _logger.Information("Generating PDF for invoice {InvoiceNumber}", InvoiceNumber);
+
+            var pdfPath = await _pdfService.GenerateInvoicePdfFileAsync(Invoice);
+
+            // Open the PDF file
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = pdfPath,
+                UseShellExecute = true
+            });
+
+            _logger.Information("PDF generated and opened: {PdfPath}", pdfPath);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error generating PDF for invoice {InvoiceNumber}", InvoiceNumber);
+            // You could show a message box here if needed
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    [RelayCommand]
+    private async Task SavePdfAsAsync()
+    {
+        try
+        {
+            if (Invoice == null)
+            {
+                _logger.Warning("Cannot save PDF: Invoice is null");
+                return;
+            }
+
+            // Show Save File Dialog
+            var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Save Invoice PDF",
+                Filter = "PDF files (*.pdf)|*.pdf",
+                FileName = $"Invoice_{Invoice.InvoiceNumber}_{DateTime.Now:yyyyMMdd}.pdf"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                IsBusy = true;
+                _logger.Information("Saving PDF to user-selected location for invoice {InvoiceNumber}", InvoiceNumber);
+
+                var pdfPath = await _pdfService.GenerateInvoicePdfFileAsync(Invoice, saveFileDialog.FileName);
+
+                _logger.Information("PDF saved to: {PdfPath}", pdfPath);
+
+                // Ask user if they want to open the file
+                var result = System.Windows.MessageBox.Show(
+                    $"PDF saved successfully to:\n{pdfPath}\n\nDo you want to open the file now?",
+                    "PDF Saved",
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Question);
+
+                if (result == System.Windows.MessageBoxResult.Yes)
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = pdfPath,
+                        UseShellExecute = true
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error saving PDF for invoice {InvoiceNumber}", InvoiceNumber);
+            System.Windows.MessageBox.Show("Error saving PDF file.", "Error",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 }

@@ -12,6 +12,10 @@ public class Invoice : BaseEntity
     public Guid ClientId { get; private set; }
     public Client Client { get; private set; } = null!;
 
+    // Company
+    public Guid CompanyId { get; private set; }
+    public Company Company { get; private set; } = null!;
+
     // Status
     public InvoiceStatus Status { get; private set; } = InvoiceStatus.Draft;
 
@@ -28,19 +32,9 @@ public class Invoice : BaseEntity
     public decimal PaidAmount { get; private set; }
     public DateTime? PaidDate { get; private set; }
 
-    // French Legal Requirements
+    // Legal & Terms
     public string? LegalMentions { get; private set; }
     public string PaymentTerms { get; private set; } = "Paiement à réception";
-    public decimal LatePenaltyRate { get; private set; } = 10.0m;  // 10% (BCE rate + 10 points)
-    public decimal FixedRecoveryFee { get; private set; } = 40m;    // €40 legal minimum
-
-    // Early payment discount (Escompte)
-    public decimal? EarlyPaymentDiscountRate { get; private set; }
-    public int? EarlyPaymentDiscountDays { get; private set; }
-
-    // For EU B2B - Autoliquidation TVA
-    public bool IsReverseTax { get; private set; } = false;
-    public string? ReverseTaxMention { get; private set; }
 
     // Lines
     public List<InvoiceLine> Lines { get; private set; } = new();
@@ -49,17 +43,21 @@ public class Invoice : BaseEntity
     public string? Notes { get; private set; }
     public string? Terms { get; private set; }
 
-    private Invoice() { } // EF Core
+    // Private constructor for EF Core
+    private Invoice() { }
 
-    public Invoice(string invoiceNumber, Guid clientId, DateTime issueDate, DateTime dueDate, string currency = "EUR")
+    // Public constructor
+    public Invoice(string invoiceNumber, Guid clientId, Guid companyId, DateTime issueDate, DateTime dueDate, string currency = "EUR")
     {
         InvoiceNumber = invoiceNumber;
         ClientId = clientId;
+        CompanyId = companyId;
         IssueDate = issueDate;
         DueDate = dueDate;
         Currency = currency;
     }
 
+    // Line Management Methods
     public void AddLine(InvoiceLine line)
     {
         Lines.Add(line);
@@ -82,6 +80,7 @@ public class Invoice : BaseEntity
         TotalAmount = SubTotal + TaxAmount - DiscountAmount;
     }
 
+    // Legal Mentions Methods
     public void SetFrenchLegalMentions(string siret, string apeCode, bool isTvaExempt)
     {
         var mention = $@"Mentions légales:
@@ -97,10 +96,7 @@ public class Invoice : BaseEntity
         mention += $@"
 
 Conditions de règlement:
-- Paiement: {PaymentTerms}
-- Escompte: Néant
-- Pénalités de retard: {LatePenaltyRate}% (taux BCE + 10 points)
-- Indemnité forfaitaire pour frais de recouvrement: {FixedRecoveryFee}€";
+- Paiement: {PaymentTerms}";
 
         LegalMentions = mention;
         MarkAsUpdated();
@@ -123,35 +119,20 @@ Conditions de règlement:
         mention += $@"
 
 Betalingsbetingelser:
-- Betaling: {PaymentTerms}
-- Morarente: {LatePenaltyRate}%";
+- Betaling: {PaymentTerms}";
 
         LegalMentions = mention;
         MarkAsUpdated();
     }
 
-    public void SetPaymentTerms(string paymentTerms, decimal latePenaltyRate = 10.0m, decimal fixedRecoveryFee = 40m)
+    // Payment Terms Method
+    public void SetPaymentTerms(string paymentTerms)
     {
         PaymentTerms = paymentTerms;
-        LatePenaltyRate = latePenaltyRate;
-        FixedRecoveryFee = fixedRecoveryFee;
         MarkAsUpdated();
     }
 
-    public void SetEarlyPaymentDiscount(decimal discountRate, int discountDays)
-    {
-        EarlyPaymentDiscountRate = discountRate;
-        EarlyPaymentDiscountDays = discountDays;
-        MarkAsUpdated();
-    }
-
-    public void SetReverseTax(bool isReverseTax, string? mention = null)
-    {
-        IsReverseTax = isReverseTax;
-        ReverseTaxMention = mention ?? "Autoliquidation de la TVA";
-        MarkAsUpdated();
-    }
-
+    // Status Management Methods
     public void Approve()
     {
         if (Status != InvoiceStatus.Draft)
@@ -182,11 +163,11 @@ Betalingsbetingelser:
     public void MarkAsPaid(decimal amount, DateTime paidDate)
     {
         PaidAmount += amount;
+        PaidDate = paidDate;
 
         if (PaidAmount >= TotalAmount)
         {
             Status = InvoiceStatus.Paid;
-            PaidDate = paidDate;
         }
 
         MarkAsUpdated();
@@ -207,17 +188,81 @@ Betalingsbetingelser:
         MarkAsUpdated();
     }
 
+    // Update Methods
     public void UpdateNotes(string? notes, string? terms)
     {
         Notes = notes;
         Terms = terms;
         MarkAsUpdated();
     }
+
     public void UpdateDates(DateTime issueDate, DateTime dueDate)
     {
         IssueDate = issueDate;
         DueDate = dueDate;
         MarkAsUpdated();
+    }
+
+    // Validation Methods
+    public bool IsValid()
+    {
+        return !string.IsNullOrEmpty(InvoiceNumber)
+            && ClientId != Guid.Empty
+            && CompanyId != Guid.Empty
+            && IssueDate <= DueDate
+            && Lines.Any()
+            && TotalAmount >= 0;
+    }
+
+    public List<string> GetValidationErrors()
+    {
+        var errors = new List<string>();
+
+        if (string.IsNullOrEmpty(InvoiceNumber))
+            errors.Add("Invoice number is required");
+
+        if (ClientId == Guid.Empty)
+            errors.Add("Client is required");
+
+        if (CompanyId == Guid.Empty)
+            errors.Add("Company is required");
+
+        if (IssueDate > DueDate)
+            errors.Add("Due date must be after issue date");
+
+        if (!Lines.Any())
+            errors.Add("At least one line item is required");
+
+        if (TotalAmount < 0)
+            errors.Add("Total amount cannot be negative");
+
+        return errors;
+    }
+
+    // Business Logic Methods
+    public bool CanBeEdited()
+    {
+        return Status == InvoiceStatus.Draft;
+    }
+
+    public bool CanBeDeleted()
+    {
+        return Status == InvoiceStatus.Draft || Status == InvoiceStatus.Cancelled;
+    }
+
+    public bool IsOverdue()
+    {
+        return Status == InvoiceStatus.Sent && DateTime.UtcNow > DueDate;
+    }
+
+    public decimal GetOutstandingBalance()
+    {
+        return TotalAmount - PaidAmount;
+    }
+
+    public bool IsFullyPaid()
+    {
+        return PaidAmount >= TotalAmount;
     }
 }
 

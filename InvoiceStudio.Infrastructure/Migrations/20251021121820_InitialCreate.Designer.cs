@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvoiceStudio.Infrastructure.Migrations
 {
     [DbContext(typeof(InvoiceDbContext))]
-    [Migration("20251015145441_AddCountrySpecificBankingFields")]
-    partial class AddCountrySpecificBankingFields
+    [Migration("20251021121820_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,13 +82,23 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("AveragePaymentDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("Client category (VIP, Regular, Prospect, etc.)");
+
                     b.Property<string>("City")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Country")
-                        .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("CountryName")
                         .HasMaxLength(100)
@@ -99,11 +109,13 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.Property<string>("CvrNumber")
                         .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasColumnType("nvarchar(8)")
+                        .HasComment("Danish CVR number (8 digits)");
 
                     b.Property<string>("DanishVatNumber")
                         .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("nvarchar(12)")
+                        .HasComment("Danish VAT number");
 
                     b.Property<decimal?>("DefaultDiscountPercent")
                         .HasPrecision(5, 2)
@@ -113,12 +125,23 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("IntraCommunityVatFr")
+                    b.Property<DateTime?>("FirstInvoiceDate")
+                        .HasColumnType("datetime2")
+                        .HasComment("Date of first invoice for this client");
+
+                    b.Property<string>("InternalReference")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("Internal client reference code");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("LastInvoiceDate")
+                        .HasColumnType("datetime2")
+                        .HasComment("Date of most recent invoice");
 
                     b.Property<string>("LegalName")
                         .HasMaxLength(200)
@@ -126,7 +149,8 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.Property<string>("LogoPath")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(500)")
+                        .HasComment("Path to client logo file");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -135,10 +159,19 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(1000)")
+                        .HasComment("Internal notes about the client");
+
+                    b.Property<decimal>("OverdueAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<int>("PaymentTermDays")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(30);
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50)
@@ -150,12 +183,23 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.Property<string>("PreferredCurrency")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
+                        .HasColumnType("nvarchar(3)")
+                        .HasDefaultValue("EUR");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Siren")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)")
+                        .HasComment("French SIREN number (9 digits)");
 
                     b.Property<string>("Siret")
                         .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
+                        .HasColumnType("nvarchar(14)")
+                        .HasComment("French SIRET number (14 digits)");
 
                     b.Property<string>("Street")
                         .HasMaxLength(200)
@@ -165,15 +209,22 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("TotalInvoices")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<decimal>("TotalRevenue")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("VatNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Website")
                         .HasMaxLength(200)
@@ -181,19 +232,104 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Country");
+                    b.HasIndex("Category")
+                        .HasDatabaseName("IX_Clients_Category");
 
-                    b.HasIndex("CvrNumber");
+                    b.HasIndex("Country")
+                        .HasDatabaseName("IX_Clients_Country");
 
-                    b.HasIndex("Email");
+                    b.HasIndex("CvrNumber")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Clients_CvrNumber")
+                        .HasFilter("[CvrNumber] IS NOT NULL");
 
-                    b.HasIndex("IsActive");
+                    b.HasIndex("Email")
+                        .HasDatabaseName("IX_Clients_Email");
 
-                    b.HasIndex("Name");
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_Clients_IsActive");
 
-                    b.HasIndex("Siret");
+                    b.HasIndex("LastInvoiceDate")
+                        .HasDatabaseName("IX_Clients_LastInvoiceDate");
+
+                    b.HasIndex("Name")
+                        .HasDatabaseName("IX_Clients_Name");
+
+                    b.HasIndex("OverdueAmount")
+                        .HasDatabaseName("IX_Clients_OverdueAmount")
+                        .HasFilter("[OverdueAmount] > 0");
+
+                    b.HasIndex("Priority")
+                        .HasDatabaseName("IX_Clients_Priority");
+
+                    b.HasIndex("Siren")
+                        .HasDatabaseName("IX_Clients_Siren")
+                        .HasFilter("[Siren] IS NOT NULL");
+
+                    b.HasIndex("Siret")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Clients_Siret")
+                        .HasFilter("[Siret] IS NOT NULL");
+
+                    b.HasIndex("TotalRevenue")
+                        .HasDatabaseName("IX_Clients_TotalRevenue");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("IX_Clients_Type");
+
+                    b.HasIndex("Category", "IsActive")
+                        .HasDatabaseName("IX_Clients_Category_Active");
+
+                    b.HasIndex("Country", "IsActive")
+                        .HasDatabaseName("IX_Clients_Country_Active");
+
+                    b.HasIndex("IsActive", "Type")
+                        .HasDatabaseName("IX_Clients_Active_Type");
 
                     b.ToTable("Clients", (string)null);
+                });
+
+            modelBuilder.Entity("InvoiceStudio.Domain.Entities.ClientAddress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AddressType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CountryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("ClientAddress");
                 });
 
             modelBuilder.Entity("InvoiceStudio.Domain.Entities.Company", b =>
@@ -400,6 +536,60 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.ToTable("Companies", (string)null);
                 });
 
+            modelBuilder.Entity("InvoiceStudio.Domain.Entities.Contact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ContactType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("Contact");
+                });
+
             modelBuilder.Entity("InvoiceStudio.Domain.Entities.CreditNote", b =>
                 {
                     b.Property<Guid>("Id")
@@ -472,6 +662,12 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.Property<Guid>("ClientId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ClientId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -487,31 +683,13 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EarlyPaymentDiscountDays")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("EarlyPaymentDiscountRate")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<decimal>("FixedRecoveryFee")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsReverseTax")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("LatePenaltyRate")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("LegalMentions")
                         .HasMaxLength(2000)
@@ -530,10 +708,6 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.Property<string>("PaymentTerms")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ReverseTaxMention")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -563,6 +737,10 @@ namespace InvoiceStudio.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("ClientId1");
+
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("DueDate");
 
                     b.HasIndex("InvoiceNumber")
@@ -571,6 +749,9 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.HasIndex("IssueDate");
 
                     b.HasIndex("Status");
+
+                    b.HasIndex("Status", "DueDate")
+                        .HasDatabaseName("IX_Invoice_Status_DueDate");
 
                     b.ToTable("Invoices", (string)null);
                 });
@@ -819,6 +1000,28 @@ namespace InvoiceStudio.Infrastructure.Migrations
                     b.Navigation("Invoice");
                 });
 
+            modelBuilder.Entity("InvoiceStudio.Domain.Entities.ClientAddress", b =>
+                {
+                    b.HasOne("InvoiceStudio.Domain.Entities.Client", "Client")
+                        .WithMany("Addresses")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("InvoiceStudio.Domain.Entities.Contact", b =>
+                {
+                    b.HasOne("InvoiceStudio.Domain.Entities.Client", "Client")
+                        .WithMany("Contacts")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
             modelBuilder.Entity("InvoiceStudio.Domain.Entities.CreditNote", b =>
                 {
                     b.HasOne("InvoiceStudio.Domain.Entities.Client", "Client")
@@ -844,9 +1047,23 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Invoices_Clients_ClientId");
+
+                    b.HasOne("InvoiceStudio.Domain.Entities.Client", null)
+                        .WithMany("Invoices")
+                        .HasForeignKey("ClientId1");
+
+                    b.HasOne("InvoiceStudio.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Invoices_Companies_CompanyId");
 
                     b.Navigation("Client");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("InvoiceStudio.Domain.Entities.InvoiceLine", b =>
@@ -855,7 +1072,8 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .WithMany("Lines")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_InvoiceLines_Invoices_InvoiceId");
 
                     b.HasOne("InvoiceStudio.Domain.Entities.Product", "Product")
                         .WithMany()
@@ -876,6 +1094,15 @@ namespace InvoiceStudio.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Invoice");
+                });
+
+            modelBuilder.Entity("InvoiceStudio.Domain.Entities.Client", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Invoices");
                 });
 
             modelBuilder.Entity("InvoiceStudio.Domain.Entities.Invoice", b =>

@@ -101,4 +101,15 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<Invoice> CreateInvoiceWithCompanyAsync(string invoiceNumber, Guid clientId, DateTime issueDate, DateTime dueDate, string currency = "EUR", CancellationToken cancellationToken = default)
+    {
+        // Get the first (default) company
+        var company = await _context.Companies.FirstAsync(cancellationToken);
+
+        // Create invoice with company reference
+        var invoice = new Invoice(invoiceNumber, clientId, company.Id, issueDate, dueDate, currency);
+
+        return invoice;
+    }
 }

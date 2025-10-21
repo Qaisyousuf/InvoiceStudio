@@ -1,14 +1,18 @@
 ﻿<Window x:Class="InvoiceStudio.Presentation.Wpf.Views.Invoices.InvoiceDialogView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:InvoiceStudio.Presentation.Wpf.Converters"
         Title="{Binding Title}"
-        Width="800" Height="600"
+        Width="900" Height="900"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
-        Background="#F8FAFC">
+        ResizeMode="CanResize"
+        Background="#F8FAFC"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
 
     <Grid Margin="30">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -20,11 +24,44 @@
                    FontSize="24" 
                    FontWeight="Bold" 
                    Foreground="#1E293B" 
-                   Margin="0,0,0,30"/>
+                   Margin="0,0,0,20"/>
+
+        <!-- Validation Error Panel -->
+        <Border Grid.Row="1" 
+                Background="#FEF2F2" 
+                BorderBrush="#F87171" 
+                BorderThickness="1" 
+                CornerRadius="6" 
+                Padding="15" 
+                Margin="0,0,0,20">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasValidationErrors}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel>
+                <TextBlock Text="⚠️ Please correct the following issues:" 
+                           FontWeight="SemiBold" 
+                           Foreground="#DC2626" 
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="{Binding ValidationMessage}" 
+                           Foreground="#DC2626" 
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
 
         <!-- Form Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      Padding="0,0,10,0">
+            <StackPanel Margin="0,0,0,20">
 
                 <!-- Invoice Header Information -->
                 <Border Background="White" CornerRadius="8" Padding="20" 
@@ -101,7 +138,8 @@
 
                         <StackPanel>
                             <TextBlock Text="Select Client *" FontWeight="Medium" Margin="0,0,0,5"/>
-                            <ComboBox ItemsSource="{Binding AvailableClients}"
+                            <ComboBox x:Name="ClientSelectionComboBox"
+                                      ItemsSource="{Binding AvailableClients}"
                                       SelectedItem="{Binding SelectedClient}"
                                       Padding="12,8" 
                                       FontSize="14">
@@ -124,6 +162,16 @@
                                 Background="#F9FAFB" 
                                 CornerRadius="6" 
                                 Padding="15">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedClient}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
                             <StackPanel>
                                 <TextBlock Text="Selected Client Details:" 
                                            FontWeight="SemiBold" 
@@ -144,38 +192,164 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Notes and Terms -->
+                <!-- Company Information Display -->
                 <Border Background="White" CornerRadius="8" Padding="20" 
                         BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
                     <StackPanel>
-                        <TextBlock Text="Additional Information" 
+                        <TextBlock Text="Company Information" 
                                    FontSize="16" 
                                    FontWeight="SemiBold" 
                                    Foreground="#374151" Margin="0,0,0,15"/>
 
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="Notes" FontWeight="Medium" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding Notes}" 
-                                     AcceptsReturn="True" 
-                                     Height="80" 
-                                     Padding="12,8" 
-                                     FontSize="14"
-                                     BorderBrush="#D1D5DB" 
-                                     VerticalScrollBarVisibility="Auto"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <StackPanel>
-                            <TextBlock Text="Terms &amp; Conditions" FontWeight="Medium" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding Terms}" 
-                                     AcceptsReturn="True" 
-                                     Height="80" 
-                                     Padding="12,8" 
-                                     FontSize="14"
-                                     BorderBrush="#D1D5DB" 
-                                     VerticalScrollBarVisibility="Auto"/>
-                        </StackPanel>
+                            <!-- Company Name and Legal Form -->
+                            <StackPanel Grid.Row="0" Grid.Column="0">
+                                <TextBlock Text="Company Name" FontWeight="Medium" FontSize="12" Foreground="#6B7280"/>
+                                <TextBlock Text="{Binding CompanyName}" FontWeight="SemiBold" FontSize="14"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="2">
+                                <TextBlock Text="Legal Form" FontWeight="Medium" FontSize="12" Foreground="#6B7280"/>
+                                <TextBlock Text="{Binding CompanyLegalForm}" FontWeight="SemiBold" FontSize="14"/>
+                            </StackPanel>
+
+                            <!-- SIRET and APE Code (for French companies) -->
+                            <StackPanel Grid.Row="2" Grid.Column="0">
+                                <TextBlock Text="SIRET" FontWeight="Medium" FontSize="12" Foreground="#6B7280"/>
+                                <TextBlock Text="{Binding CompanySiret, TargetNullValue='Not specified'}" FontFamily="Consolas" FontSize="14"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="2">
+                                <TextBlock Text="APE Code" FontWeight="Medium" FontSize="12" Foreground="#6B7280"/>
+                                <TextBlock Text="{Binding CompanyApeCode, TargetNullValue='Not specified'}" FontFamily="Consolas" FontSize="14"/>
+                            </StackPanel>
+
+                            <!-- Address -->
+                            <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
+                                <TextBlock Text="Address" FontWeight="Medium" FontSize="12" Foreground="#6B7280" Margin="0,0,0,5"/>
+                                <TextBlock FontSize="14">
+                                    <Run Text="{Binding CompanyStreet}"/>
+                                    <LineBreak/>
+                                    <Run Text="{Binding CompanyPostalCode}"/> <Run Text="{Binding CompanyCity}"/>
+                                    <LineBreak/>
+                                    <Run Text="{Binding CompanyCountry}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Border>
+
+                <!-- Payment Information -->
+                <Border Background="White" CornerRadius="8" Padding="20" 
+                        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Payment Information" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#374151" Margin="0,0,0,15"/>
+
+                        <!-- Universal Banking Info -->
+                        <Border Background="#F8FAFC" CornerRadius="6" Padding="15" Margin="0,0,0,15">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="140"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Headers -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Bank Name" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#6B7280"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="IBAN" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#6B7280"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="SWIFT/BIC Code" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#6B7280"/>
+
+                                <!-- Values -->
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding CompanyBankName}" 
+                                           FontWeight="SemiBold" FontSize="14" Foreground="#374151"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CompanyIban}" 
+                                           FontFamily="Consolas" FontSize="14" Foreground="#1E40AF"
+                                           TextWrapping="Wrap" Margin="10,0"/>
+                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding CompanySwift}" 
+                                           FontFamily="Consolas" FontSize="14" Foreground="#374151"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- French RIB Section -->
+                        <Border Background="#FEF3C7" CornerRadius="6" Padding="15">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CompanyCountry}" Value="France">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <StackPanel>
+                                <TextBlock Text="🇫🇷 RIB (Relevé d'Identité Bancaire)" 
+                                           FontWeight="SemiBold" FontSize="12" 
+                                           Foreground="#92400E" Margin="0,0,0,10"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Headers -->
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Code Banque" 
+                                               FontWeight="Medium" FontSize="10" Foreground="#92400E"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Code Guichet" 
+                                               FontWeight="Medium" FontSize="10" Foreground="#92400E"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Numéro de Compte" 
+                                               FontWeight="Medium" FontSize="10" Foreground="#92400E"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Clé RIB" 
+                                               FontWeight="Medium" FontSize="10" Foreground="#92400E"/>
+
+                                    <!-- Values -->
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding CompanyFrenchBankCode}" 
+                                               FontFamily="Consolas" FontWeight="SemiBold" FontSize="14" Foreground="#1C1917"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CompanyFrenchBranchCode}" 
+                                               FontFamily="Consolas" FontWeight="SemiBold" FontSize="14" Foreground="#1C1917"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding CompanyFrenchAccountNumber}" 
+                                               FontFamily="Consolas" FontWeight="SemiBold" FontSize="14" Foreground="#1C1917"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding CompanyFrenchRibKey}" 
+                                               FontFamily="Consolas" FontWeight="SemiBold" FontSize="14" Foreground="#1C1917"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
                 <!-- Invoice Lines Section -->
                 <Border Background="White" CornerRadius="8" Padding="20" 
                         BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
@@ -232,7 +406,10 @@
                                   BorderThickness="1"
                                   BorderBrush="#E2E8F0"
                                   RowHeight="45"
-                                  MinHeight="150">
+                                  MinHeight="150"
+                                  MaxHeight="300"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
@@ -299,7 +476,7 @@
                                 <DataGridTemplateColumn Header="Unit Price" Width="100">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBox Text="{Binding UnitPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=C}"
+                                            <TextBox Text="{Binding UnitPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"
                                                      Padding="8,4"
                                                      BorderThickness="0"
                                                      Background="Transparent"
@@ -402,6 +579,40 @@
                         </Border>
                     </StackPanel>
                 </Border>
+
+                <!-- Notes and Terms -->
+                <Border Background="White" CornerRadius="8" Padding="20" 
+                        BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="Additional Information" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#374151" Margin="0,0,0,15"/>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Notes" FontWeight="Medium" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Notes}" 
+                                     AcceptsReturn="True" 
+                                     Height="80" 
+                                     Padding="12,8" 
+                                     FontSize="14"
+                                     BorderBrush="#D1D5DB" 
+                                     VerticalScrollBarVisibility="Auto"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="Terms &amp; Conditions" FontWeight="Medium" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding Terms}" 
+                                     AcceptsReturn="True" 
+                                     Height="80" 
+                                     Padding="12,8" 
+                                     FontSize="14"
+                                     BorderBrush="#D1D5DB" 
+                                     VerticalScrollBarVisibility="Auto"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
                 <!-- Totals Summary -->
                 <Border Background="White" CornerRadius="8" Padding="20" 
                         BorderBrush="#E2E8F0" BorderThickness="1">
@@ -451,10 +662,20 @@
         </ScrollViewer>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="2" 
+        <StackPanel Grid.Row="3" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right" 
                     Margin="0,30,0,0">
+
+            <Button Content="Clear Form" 
+                    Command="{Binding ClearFormCommand}"
+                    Padding="15,10" 
+                    MinWidth="100"
+                    Background="#F59E0B" 
+                    Foreground="White" 
+                    BorderThickness="0" 
+                    FontWeight="SemiBold"
+                    Margin="0,0,15,0"/>
 
             <Button Content="Cancel" 
                     Click="CancelButton_Click"
@@ -466,14 +687,26 @@
                     FontWeight="SemiBold"
                     Margin="0,0,15,0"/>
 
-            <Button Content="Create Invoice" 
+            <Button x:Name="SaveButton"
+                    Content="Create Invoice" 
                     Click="SaveButton_Click"
                     Padding="20,10" 
                     MinWidth="120"
                     Background="#10B981" 
                     Foreground="White" 
                     BorderThickness="0" 
-                    FontWeight="SemiBold"/>
+                    FontWeight="SemiBold">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="True"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
     </Grid>
 </Window>
