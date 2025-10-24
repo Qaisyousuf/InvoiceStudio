@@ -14,6 +14,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- ensure Company is loaded
             .Include(i => i.Lines)
             .AsNoTracking()
             .FirstOrDefaultAsync(i => i.InvoiceNumber == invoiceNumber, cancellationToken);
@@ -23,6 +24,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- include Company
             .Where(i => i.ClientId == clientId)
             .OrderByDescending(i => i.IssueDate)
             .AsNoTracking()
@@ -33,6 +35,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- include Company
             .Where(i => i.Status == status)
             .OrderByDescending(i => i.IssueDate)
             .AsNoTracking()
@@ -43,6 +46,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- include Company
             .Where(i => i.Status == InvoiceStatus.Sent && i.DueDate < DateTime.UtcNow)
             .OrderBy(i => i.DueDate)
             .AsNoTracking()
@@ -53,6 +57,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- include Company
             .Where(i => i.IssueDate >= startDate && i.IssueDate <= endDate)
             .OrderByDescending(i => i.IssueDate)
             .AsNoTracking()
@@ -63,8 +68,10 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- include Company (bank details, address, etc.)
             .Include(i => i.Lines)
                 .ThenInclude(l => l.Product)
+            .AsNoTracking()
             .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
     }
 
@@ -72,6 +79,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
     {
         return await _dbSet
             .Include(i => i.Client)
+            .Include(i => i.Company)                 // <-- include Company
             .OrderByDescending(i => i.IssueDate)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
@@ -109,6 +117,11 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
 
         // Create invoice with company reference
         var invoice = new Invoice(invoiceNumber, clientId, company.Id, issueDate, dueDate, currency);
+
+        // Optional: attach navigation (helps in-memory use before reloading)
+        invoice = _context.Attach(invoice).Entity;
+        // If you want to save immediately, uncomment:
+        // await _context.SaveChangesAsync(cancellationToken);
 
         return invoice;
     }
