@@ -320,30 +320,59 @@ public partial class InvoicesListViewModel : ViewModelBase
     {
         try
         {
+            // Only allow editing of Draft invoices
             if (invoice?.Status != InvoiceStatus.Draft)
             {
-                _logger.Warning("Only draft invoices can be edited");
+                _logger.Warning("Only draft invoices can be edited. Current status: {Status}", invoice?.Status);
+
+                // Show user-friendly message
+                System.Windows.MessageBox.Show(
+                    "Only draft invoices can be edited.",
+                    "Cannot Edit Invoice",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
                 return;
             }
 
             _logger.Information("Opening edit dialog for invoice {InvoiceNumber}", invoice.InvoiceNumber);
 
-            var viewModel = _serviceProvider.GetRequiredService<EditInvoiceViewModel>();
-            await viewModel.LoadInvoiceAsync(invoice.Id);
+            // Get the InvoiceDialogViewModel from DI (reuse the same dialog for create/edit)
+            var dialogViewModel = _serviceProvider.GetRequiredService<InvoiceDialogViewModel>();
 
-            var dialog = new EditInvoiceView(viewModel);
-            dialog.Owner = System.Windows.Application.Current.MainWindow;
+            // Load the invoice for editing
+            await dialogViewModel.LoadInvoiceForEditAsync(invoice.Id);
 
-            bool? result = dialog.ShowDialog();
+            // Create and show the dialog
+            var dialog = new InvoiceDialogView(dialogViewModel)
+            {
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+
+            // Show dialog
+            var result = dialog.ShowDialog();
+
             if (result == true)
             {
-                _logger.Information("Invoice edited successfully, refreshing list");
+                _logger.Information("Invoice {InvoiceNumber} edited successfully, refreshing list", invoice.InvoiceNumber);
+
+                // Refresh the invoices list to show updated data
                 await LoadInvoicesAsync();
+            }
+            else
+            {
+                _logger.Information("Invoice edit cancelled for {InvoiceNumber}", invoice.InvoiceNumber);
             }
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error opening edit dialog");
+            _logger.Error(ex, "Error opening edit dialog for invoice {InvoiceNumber}", invoice?.InvoiceNumber);
+
+            // Show error to user
+            System.Windows.MessageBox.Show(
+                "An error occurred while opening the invoice for editing. Please try again.",
+                "Error",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error);
         }
     }
 

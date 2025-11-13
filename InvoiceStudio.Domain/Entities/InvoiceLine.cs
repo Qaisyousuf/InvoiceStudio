@@ -94,4 +94,16 @@ public class InvoiceLine : BaseEntity
         TaxAmount = subtotalAfterDiscount * (TaxRate / 100);
         Total = subtotalAfterDiscount + TaxAmount;
     }
+
+    public void UpdateDetails(string description, decimal quantity, decimal unitPrice, decimal taxRate, Guid? productId = null)
+    {
+        Description = description;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        TaxRate = taxRate;
+        ProductId = productId;
+
+        Calculate(); // Recalculate all amounts
+        MarkAsUpdated(); // Mark entity as updated
+    }
 }

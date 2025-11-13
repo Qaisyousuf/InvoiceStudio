@@ -146,11 +146,15 @@ public class PdfService : IPdfService
                                     }
 
                                     var hasBankInfo =
-                                        !string.IsNullOrWhiteSpace(invoice.Company?.BankName) ||
-                                        !string.IsNullOrWhiteSpace(invoice.Company?.Iban) ||
-                                        !string.IsNullOrWhiteSpace(invoice.Company?.Swift) ||
-                                        !string.IsNullOrWhiteSpace(invoice.Company?.FrenchBankCode) ||
-                                        !string.IsNullOrWhiteSpace(invoice.Company?.DanishRegistrationNumber);
+     !string.IsNullOrWhiteSpace(invoice.Company?.BankName) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.Iban) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.Swift) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.FrenchBankCode) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.FrenchBranchCode) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.FrenchAccountNumber) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.FrenchRibKey) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.DanishRegistrationNumber) ||
+     !string.IsNullOrWhiteSpace(invoice.Company?.DanishAccountNumber);
 
                                     if (hasBankInfo)
                                     {
@@ -160,8 +164,9 @@ public class PdfService : IPdfService
                                         if (!string.IsNullOrWhiteSpace(invoice.Company?.Iban))
                                             company.Item().Text($"IBAN: {FormatIban(invoice.Company.Iban)}").FontSize(9);
                                         if (!string.IsNullOrWhiteSpace(invoice.Company?.Swift))
-                                            company.Item().Text($"SWIFT: {invoice.Company.Swift}").FontSize(9);
+                                            company.Item().Text($"SWIFT/BIC: {invoice.Company.Swift}").FontSize(9);
 
+                                        // French RIB - Display each component separately
                                         var hasFrenchRib =
                                             !string.IsNullOrWhiteSpace(invoice.Company?.FrenchBankCode) ||
                                             !string.IsNullOrWhiteSpace(invoice.Company?.FrenchBranchCode) ||
@@ -170,8 +175,14 @@ public class PdfService : IPdfService
 
                                         if (hasFrenchRib)
                                         {
-                                            var rib = $"{invoice.Company?.FrenchBankCode} {invoice.Company?.FrenchBranchCode} {invoice.Company?.FrenchAccountNumber} {invoice.Company?.FrenchRibKey}".Trim();
-                                            company.Item().Text($"RIB: {rib}").FontSize(9);
+                                            if (!string.IsNullOrWhiteSpace(invoice.Company?.FrenchBankCode))
+                                                company.Item().Text($"Code Banque: {invoice.Company.FrenchBankCode}").FontSize(9);
+                                            if (!string.IsNullOrWhiteSpace(invoice.Company?.FrenchBranchCode))
+                                                company.Item().Text($"Code Guichet: {invoice.Company.FrenchBranchCode}").FontSize(9);
+                                            if (!string.IsNullOrWhiteSpace(invoice.Company?.FrenchAccountNumber))
+                                                company.Item().Text($"Numéro de Compte: {invoice.Company.FrenchAccountNumber}").FontSize(9);
+                                            if (!string.IsNullOrWhiteSpace(invoice.Company?.FrenchRibKey))
+                                                company.Item().Text($"Clé RIB: {invoice.Company.FrenchRibKey}").FontSize(9);
                                         }
 
                                         if (!string.IsNullOrWhiteSpace(invoice.Company?.DanishRegistrationNumber))

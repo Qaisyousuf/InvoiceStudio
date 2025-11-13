@@ -384,56 +384,105 @@ public partial class InvoiceDialogViewModel : ViewModelBase
             }
 
             IsBusy = true;
-            _logger.Information("Creating new invoice {InvoiceNumber}", InvoiceNumber);
 
-            // Create new invoice
-            var invoice = new Invoice(
-                InvoiceNumber,
-                SelectedClient!.Id,
-                _currentCompany!.Id,
-                IssueDate,
-                DueDate,
-                Currency);
-
-            // Apply company defaults (legal mentions, payment terms, etc.)
-            ApplyCompanyDefaults(invoice);
-
-            // Set notes and terms if available
-            if (!string.IsNullOrEmpty(Notes) || !string.IsNullOrEmpty(Terms))
+            if (IsEditMode && _existingInvoice != null)
             {
-                invoice.UpdateNotes(Notes, Terms);
-            }
+                // UPDATE EXISTING INVOICE
+                _logger.Information("Updating existing invoice {InvoiceNumber}", InvoiceNumber);
 
-            // Add invoice lines
-            foreach (var lineVm in InvoiceLines.Where(l => l.Quantity > 0))
+                var trackedInvoice = await _invoiceRepository.GetByIdWithDetailsAsync(_existingInvoice.Id);
+                if (trackedInvoice == null)
+                {
+                    HasValidationErrors = true;
+                    ValidationMessage = "Invoice not found for update";
+                    return false;
+                }
+
+                // Update dates and notes
+                trackedInvoice.UpdateDates(IssueDate, DueDate);
+                trackedInvoice.UpdateNotes(Notes, Terms);
+
+                // Clear all existing lines
+                var linesToRemove = trackedInvoice.Lines.ToList();
+                foreach (var line in linesToRemove)
+                {
+                    trackedInvoice.RemoveLine(line);
+                }
+
+                // Add all lines fresh (this avoids any UpdateDetails calls)
+                for (int i = 0; i < InvoiceLines.Count; i++)
+                {
+                    var lineVm = InvoiceLines[i];
+
+                    var newLine = new InvoiceLine(
+                        trackedInvoice.Id,
+                        lineVm.Description,
+                        lineVm.Quantity,
+                        lineVm.UnitPrice,
+                        lineVm.TaxRate / 100,
+                        lineVm.SelectedProduct?.Id
+                    );
+
+                    newLine.SetLineOrder(i + 1);
+                    trackedInvoice.AddLine(newLine);
+                }
+
+                ApplyCompanyDefaults(trackedInvoice);
+                await _invoiceRepository.UpdateAsync(trackedInvoice);
+                await _invoiceRepository.SaveChangesAsync();
+
+                _logger.Information("Invoice {InvoiceNumber} updated successfully", InvoiceNumber);
+            }
+            else
             {
-                var invoiceLine = new InvoiceLine(
-                    invoice.Id,
-                    lineVm.Description,
-                    lineVm.Quantity,
-                    lineVm.UnitPrice,
-                    lineVm.TaxRate,
-                    lineVm.SelectedProduct?.Id
-                );
+                // CREATE NEW INVOICE
+                _logger.Information("Creating new invoice {InvoiceNumber}", InvoiceNumber);
 
-                invoice.AddLine(invoiceLine);
+                var invoice = new Invoice(
+                    InvoiceNumber,
+                    SelectedClient!.Id,
+                    _currentCompany!.Id,
+                    IssueDate,
+                    DueDate,
+                    Currency);
+
+                ApplyCompanyDefaults(invoice);
+
+                // Add all lines
+                for (int i = 0; i < InvoiceLines.Count; i++)
+                {
+                    var lineVm = InvoiceLines[i];
+
+                    var invoiceLine = new InvoiceLine(
+                        invoice.Id,
+                        lineVm.Description,
+                        lineVm.Quantity,
+                        lineVm.UnitPrice,
+                        lineVm.TaxRate,
+                        lineVm.SelectedProduct?.Id
+                    );
+
+                    invoiceLine.SetLineOrder(i + 1);
+                    invoice.AddLine(invoiceLine);
+                }
+
+                if (!string.IsNullOrWhiteSpace(Notes) || !string.IsNullOrWhiteSpace(Terms))
+                    invoice.UpdateNotes(Notes, Terms);
+
+                await _invoiceRepository.AddAsync(invoice);
+                await _invoiceRepository.SaveChangesAsync();
+
+                _logger.Information("Invoice {InvoiceNumber} created successfully", InvoiceNumber);
             }
-
-            // Save invoice
-            await _invoiceRepository.AddAsync(invoice);
-            await _invoiceRepository.SaveChangesAsync();
-
-            _logger.Information("Invoice {InvoiceNumber} created successfully with {LineCount} lines",
-                InvoiceNumber, invoice.Lines.Count);
 
             ClearValidation();
             return true;
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error creating invoice");
+            _logger.Error(ex, "Error saving invoice: {Message}", ex.Message);
             HasValidationErrors = true;
-            ValidationMessage = "Failed to save invoice. Please try again.";
+            ValidationMessage = $"Failed to save invoice. Please try again.";
             return false;
         }
         finally
@@ -441,6 +490,87 @@ public partial class InvoiceDialogViewModel : ViewModelBase
             IsBusy = false;
         }
     }
+    private Invoice CreateNewInvoice()
+{
+    return new Invoice(
+        InvoiceNumber,
+        SelectedClient!.Id,
+        _currentCompany!.Id,
+        IssueDate,
+        DueDate,
+        Currency);
+}
+
+private void AddInvoiceLines(Invoice invoice)
+{
+    for (int i = 0; i < InvoiceLines.Count; i++)
+    {
+        var lineVm = InvoiceLines[i];
+        
+        var invoiceLine = new InvoiceLine(
+            invoice.Id,
+            lineVm.Description,
+            lineVm.Quantity,
+            lineVm.UnitPrice,
+            ConvertTaxRateToDecimal(lineVm.TaxRate),
+            lineVm.SelectedProduct?.Id
+        );
+
+        invoiceLine.SetLineOrder(i + 1);
+        invoice.AddLine(invoiceLine);
+    }
+}
+
+private async Task UpdateInvoiceLinesAsync(Invoice trackedInvoice)
+{
+    // More efficient line update - only modify what changed
+    var existingLines = trackedInvoice.Lines.ToList();
+    
+    // Remove lines that no longer exist
+    for (int i = existingLines.Count - 1; i >= InvoiceLines.Count; i--)
+    {
+        trackedInvoice.RemoveLine(existingLines[i]);
+    }
+
+    // Update or add lines
+    for (int i = 0; i < InvoiceLines.Count; i++)
+    {
+        var lineVm = InvoiceLines[i];
+        
+        if (i < existingLines.Count)
+        {
+            // Update existing line
+            var existingLine = existingLines[i];
+            existingLine.UpdateDetails(
+                lineVm.Description,
+                lineVm.Quantity,
+                lineVm.UnitPrice,
+                ConvertTaxRateToDecimal(lineVm.TaxRate),
+                lineVm.SelectedProduct?.Id
+            );
+            existingLine.SetLineOrder(i + 1);
+        }
+        else
+        {
+            // Add new line
+            var newLine = new InvoiceLine(
+                trackedInvoice.Id,
+                lineVm.Description,
+                lineVm.Quantity,
+                lineVm.UnitPrice,
+                ConvertTaxRateToDecimal(lineVm.TaxRate),
+                lineVm.SelectedProduct?.Id
+            );
+            newLine.SetLineOrder(i + 1);
+            trackedInvoice.AddLine(newLine);
+        }
+    }
+}
+
+private decimal ConvertTaxRateToDecimal(decimal taxRatePercentage)
+{
+    return taxRatePercentage / 100; // 20.0 -> 0.20
+}
 
     private void ApplyCompanyDefaults(Invoice invoice)
     {
@@ -558,6 +688,69 @@ public partial class InvoiceDialogViewModel : ViewModelBase
             _logger.Error(ex, "Error loading invoice for edit");
             HasValidationErrors = true;
             ValidationMessage = "Failed to load invoice for editing";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    public async Task LoadInvoiceForEditingAsync(Guid invoiceId)
+    {
+        try
+        {
+            IsBusy = true;
+            IsEditMode = true;
+            _logger.Information("Loading invoice {InvoiceId} for editing", invoiceId);
+
+            // Load the existing invoice with all its data
+            var existingInvoice = await _invoiceRepository.GetByIdWithDetailsAsync(invoiceId);
+            if (existingInvoice == null)
+            {
+                _logger.Error("Invoice not found: {InvoiceId}", invoiceId);
+                return;
+            }
+
+            _existingInvoice = existingInvoice;
+
+            // Populate the form fields with existing invoice data
+            InvoiceNumber = existingInvoice.InvoiceNumber ?? string.Empty;
+            Currency = existingInvoice.Currency ?? "EUR";
+            IssueDate = existingInvoice.IssueDate;
+            DueDate = existingInvoice.DueDate;
+            Notes = existingInvoice.Notes ?? string.Empty;
+            Terms = existingInvoice.Terms;
+
+            // Set the selected client
+            SelectedClient = AvailableClients.FirstOrDefault(c => c.Id == existingInvoice.ClientId);
+
+            // Load existing invoice lines
+            InvoiceLines.Clear();
+            foreach (var line in existingInvoice.Lines)
+            {
+                var lineViewModel = new InvoiceLineViewModel
+                {
+                    Description = line.Description,
+                    Quantity = line.Quantity,
+                    UnitPrice = line.UnitPrice,
+                    TaxRate = line.TaxRate,
+                    SelectedProduct = AvailableProducts.FirstOrDefault(p => p.Id == line.ProductId)
+                };
+                InvoiceLines.Add(lineViewModel);
+            }
+
+            // Update totals
+            UpdateTotals();
+
+            // Change dialog title
+            Title = $"Edit Invoice - {existingInvoice.InvoiceNumber}";
+
+            _logger.Information("Invoice {InvoiceNumber} loaded for editing successfully", existingInvoice.InvoiceNumber);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Failed to load invoice for editing");
+            HasValidationErrors = true;
+            ValidationMessage = "Failed to load invoice for editing. Please try again.";
         }
         finally
         {

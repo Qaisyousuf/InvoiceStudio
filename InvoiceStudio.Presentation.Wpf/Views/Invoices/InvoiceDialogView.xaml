@@ -686,16 +686,28 @@
                     BorderThickness="0" 
                     FontWeight="SemiBold"
                     Margin="0,0,15,0"/>
-
             <Button x:Name="SaveButton"
-                    Content="Create Invoice" 
-                    Click="SaveButton_Click"
-                    Padding="20,10" 
-                    MinWidth="120"
-                    Background="#10B981" 
-                    Foreground="White" 
-                    BorderThickness="0" 
-                    FontWeight="SemiBold">
+        Click="SaveButton_Click"
+        Padding="20,10" 
+        MinWidth="120"
+        Background="#10B981" 
+        Foreground="White" 
+        BorderThickness="0" 
+        FontWeight="SemiBold">
+                <Button.Content>
+                    <TextBlock>
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="Create Invoice"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditMode}" Value="True">
+                                        <Setter Property="Text" Value="Update Invoice"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Button.Content>
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="True"/>

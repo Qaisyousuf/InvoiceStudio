@@ -2,6 +2,7 @@
 using InvoiceStudio.Presentation.Wpf.ViewModels.Base;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
 using InvoiceStudio.Presentation.Wpf.Views.Company;
+using InvoiceStudio.Presentation.Wpf.Views.Dashboard;
 using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,9 +40,23 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToDashboard()
     {
-        Title = "Dashboard";
-        CurrentView = CreatePlaceholder("Dashboard - Coming Soon");
-        _logger.Information("Navigated to Dashboard");
+        try
+        {
+            Title = "Dashboard";
+
+            // Get DashboardView from DI container
+            var dashboardView = _serviceProvider.GetRequiredService<DashboardView>();
+            CurrentView = dashboardView;
+
+            _logger.Information("Navigated to Dashboard");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error navigating to Dashboard");
+
+            // Fallback to placeholder if there's an error
+            CurrentView = CreatePlaceholder("Dashboard - Error Loading");
+        }
     }
 
     [RelayCommand]

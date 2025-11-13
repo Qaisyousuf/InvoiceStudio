@@ -6,6 +6,7 @@ using InvoiceStudio.Presentation.Wpf.Services;
 using InvoiceStudio.Presentation.Wpf.ViewModels;
 using InvoiceStudio.Presentation.Wpf.Views.Clients;
 using InvoiceStudio.Presentation.Wpf.Views.Company;
+using InvoiceStudio.Presentation.Wpf.Views.Dashboard;
 using InvoiceStudio.Presentation.Wpf.Views.Invoices;
 using InvoiceStudio.Presentation.Wpf.Views.Products;
 using Microsoft.EntityFrameworkCore;
@@ -90,7 +91,6 @@ public partial class App : System.Windows.Application
         services.AddTransient<InvoicesListViewModel>();
         services.AddTransient<InvoiceDialogViewModel>();
         services.AddTransient<InvoiceDetailViewModel>();
-        services.AddTransient<EditInvoiceViewModel>();
         services.AddTransient<CompanySettingsViewModel>();
 
         // Views - Register as Transient
@@ -99,6 +99,8 @@ public partial class App : System.Windows.Application
         services.AddTransient<ProductsListView>();
         services.AddTransient<InvoicesListView>();
         services.AddTransient<CompanySettingsView>();
+        services.AddTransient<DashboardViewModel>();
+        services.AddTransient<DashboardView>();
 
         // Add Serilog logger
         services.AddSingleton(Log.Logger);
